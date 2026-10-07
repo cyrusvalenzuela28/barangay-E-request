@@ -1,0 +1,4641 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Barangay e-Request System</title>
+
+<!-- QR CODE LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<style>
+/* =========================================================
+   BARANGAY E-REQUEST SYSTEM
+   ALL-IN-ONE PROTOTYPE
+   HTML + CSS + JAVASCRIPT
+   ========================================================= */
+
+:root{
+  --primary:#123b82;
+  --primary2:#1769d1;
+  --primary3:#0b2b61;
+  --gold:#f5b301;
+  --gold2:#d99b00;
+
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#667085;
+  --border:#dfe5ee;
+
+  --success:#16803c;
+  --success-bg:#e8f7ee;
+
+  --warning:#a86500;
+  --warning-bg:#fff4dc;
+
+  --danger:#b42318;
+  --danger-bg:#fdecec;
+
+  --info:#175cd3;
+  --info-bg:#eaf2ff;
+
+  --shadow:0 12px 35px rgba(15,35,75,.10);
+  --radius:18px;
+}
+
+html[data-theme="dark"]{
+  --bg:#0b1220;
+  --card:#111b2e;
+  --text:#f5f7fb;
+  --muted:#aab5c7;
+  --border:#273550;
+
+  --success-bg:#123322;
+  --warning-bg:#3b2d0d;
+  --danger-bg:#401d1b;
+  --info-bg:#102b54;
+
+  --shadow:0 12px 35px rgba(0,0,0,.35);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 3px 15px rgba(0,0,0,.05);
+}
+
+.navbar{
+  max-width:1250px;
+  margin:auto;
+  min-height:76px;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:230px;
+}
+
+.brand-logo{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:23px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  box-shadow:0 8px 20px rgba(18,59,130,.25);
+}
+
+.brand-title{
+  font-weight:900;
+  font-size:17px;
+}
+
+.brand-sub{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.nav-links button{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  padding:9px 11px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+.nav-links button:hover{
+  background:var(--info-bg);
+  color:var(--primary);
+}
+
+.menu-btn{
+  display:none;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.container{
+  width:min(1250px,calc(100% - 30px));
+  margin:auto;
+}
+
+main{
+  min-height:calc(100vh - 160px);
+  padding:35px 0 60px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn{
+  border:0;
+  border-radius:11px;
+  padding:11px 16px;
+  font-weight:800;
+  transition:.2s;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn-primary{
+  color:white;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+
+.btn-secondary{
+  color:var(--text);
+  background:var(--card);
+  border:1px solid var(--border);
+}
+
+.btn-gold{
+  color:#111;
+  background:var(--gold);
+}
+
+.btn-success{
+  color:white;
+  background:var(--success);
+}
+
+.btn-danger{
+  color:white;
+  background:var(--danger);
+}
+
+.btn-info{
+  color:white;
+  background:var(--info);
+}
+
+.btn-sm{
+  padding:7px 10px;
+  font-size:12px;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+  border-radius:26px;
+  padding:50px;
+  color:white;
+  overflow:hidden;
+  position:relative;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(245,179,1,.30),transparent 25%),
+    linear-gradient(135deg,#0b2b61,#1769d1);
+  box-shadow:var(--shadow);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:300px;
+  height:300px;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+  right:-100px;
+  bottom:-150px;
+}
+
+.hero-content{
+  position:relative;
+  z-index:1;
+  max-width:750px;
+}
+
+.badge{
+  display:inline-flex;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  background:rgba(255,255,255,.14);
+  margin-bottom:15px;
+}
+
+.hero h1{
+  font-size:clamp(32px,5vw,58px);
+  line-height:1.05;
+  margin-bottom:15px;
+}
+
+.hero p{
+  max-width:680px;
+  color:#dce9ff;
+  font-size:16px;
+  margin-bottom:25px;
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+
+.card-body{
+  padding:22px;
+}
+
+.section{
+  margin-top:30px;
+}
+
+.section-title{
+  margin-bottom:15px;
+}
+
+.section-title h2{
+  font-size:25px;
+}
+
+.section-title p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* =========================================================
+   DOCUMENT CARDS
+   ========================================================= */
+
+.doc-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.doc-card{
+  padding:20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  transition:.2s;
+}
+
+.doc-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--primary2);
+  box-shadow:var(--shadow);
+}
+
+.doc-icon{
+  width:45px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:var(--info-bg);
+  color:var(--primary2);
+  font-size:20px;
+  margin-bottom:13px;
+}
+
+.doc-card h3{
+  font-size:16px;
+  margin-bottom:6px;
+}
+
+.doc-card p{
+  color:var(--muted);
+  font-size:13px;
+  min-height:40px;
+}
+
+.doc-meta{
+  display:flex;
+  justify-content:space-between;
+  margin:14px 0;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.price{
+  font-weight:900;
+  color:var(--primary);
+}
+
+/* =========================================================
+   PORTAL CARDS
+   ========================================================= */
+
+.portal-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.portal{
+  padding:25px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--card);
+}
+
+.portal h3{
+  margin-bottom:7px;
+}
+
+.portal p{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-size:13px;
+  font-weight:800;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:12px 13px;
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--card);
+  color:var(--text);
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--primary2);
+  box-shadow:0 0 0 3px rgba(23,105,209,.10);
+}
+
+textarea{
+  resize:vertical;
+  min-height:110px;
+}
+
+/* =========================================================
+   STEPS
+   ========================================================= */
+
+.steps{
+  display:flex;
+  gap:8px;
+  margin-bottom:25px;
+}
+
+.step{
+  flex:1;
+  padding:10px;
+  text-align:center;
+  border-radius:10px;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+}
+
+.step.active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+
+.step.done{
+  background:var(--success-bg);
+  color:var(--success);
+  border-color:transparent;
+}
+
+/* =========================================================
+   INFO BOX
+   ========================================================= */
+
+.notice{
+  padding:14px;
+  border-radius:12px;
+  background:var(--info-bg);
+  color:var(--info);
+  font-size:13px;
+  margin-bottom:18px;
+}
+
+.notice.warning{
+  background:var(--warning-bg);
+  color:var(--warning);
+}
+
+.notice.danger{
+  background:var(--danger-bg);
+  color:var(--danger);
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.status-Pending{
+  color:var(--warning);
+  background:var(--warning-bg);
+}
+
+.status-Processing{
+  color:var(--info);
+  background:var(--info-bg);
+}
+
+.status-Ready{
+  color:var(--success);
+  background:var(--success-bg);
+}
+
+.status-Completed{
+  color:var(--success);
+  background:var(--success-bg);
+}
+
+.status-Rejected{
+  color:var(--danger);
+  background:var(--danger-bg);
+}
+
+/* =========================================================
+   TRACKING
+   ========================================================= */
+
+.track-box{
+  max-width:650px;
+  margin:20px auto;
+}
+
+.track-result{
+  margin-top:20px;
+}
+
+.timeline{
+  position:relative;
+  margin:20px 0;
+  padding-left:28px;
+}
+
+.timeline:before{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:4px;
+  bottom:4px;
+  width:2px;
+  background:var(--border);
+}
+
+.timeline-item{
+  position:relative;
+  padding:0 0 25px;
+}
+
+.timeline-dot{
+  position:absolute;
+  left:-27px;
+  top:3px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:var(--border);
+  border:3px solid var(--card);
+  box-shadow:0 0 0 2px var(--border);
+}
+
+.timeline-item.active .timeline-dot{
+  background:var(--primary2);
+  box-shadow:0 0 0 2px var(--primary2);
+}
+
+.timeline-item h4{
+  font-size:14px;
+}
+
+.timeline-item p{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+
+.stat{
+  padding:17px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+}
+
+.stat-value{
+  font-size:27px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.admin-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+.toolbar-left,
+.toolbar-right{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th,
+td{
+  padding:12px;
+  text-align:left;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+
+th{
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+tr:hover td{
+  background:rgba(23,105,209,.03);
+}
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+.login-wrap{
+  max-width:460px;
+  margin:50px auto;
+}
+
+.login-card{
+  padding:30px;
+}
+
+.login-logo{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.login-logo .brand-logo{
+  margin:auto;
+}
+
+/* =========================================================
+   QR
+   ========================================================= */
+
+.qr-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.qr-box{
+  text-align:center;
+  padding:25px;
+}
+
+.qr-container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:20px auto;
+  min-height:260px;
+}
+
+.qr-container img{
+  max-width:100%;
+}
+
+.url-box{
+  word-break:break-all;
+  font-size:12px;
+  padding:12px;
+  background:var(--bg);
+  border-radius:10px;
+  color:var(--muted);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:3000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,.55);
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-card{
+  width:min(700px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:var(--card);
+  border-radius:20px;
+  border:1px solid var(--border);
+  box-shadow:0 20px 70px rgba(0,0,0,.3);
+}
+
+.modal-header{
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-body{
+  padding:20px;
+}
+
+.modal-close{
+  border:0;
+  background:transparent;
+  font-size:22px;
+  color:var(--muted);
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+#toastBox{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:5000;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.toast{
+  min-width:260px;
+  max-width:360px;
+  padding:13px 15px;
+  color:white;
+  background:#172033;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  font-size:13px;
+  animation:toastIn .2s ease;
+}
+
+.toast.success{
+  background:var(--success);
+}
+
+.toast.error{
+  background:var(--danger);
+}
+
+.toast.info{
+  background:var(--primary);
+}
+
+@keyframes toastIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty{
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted);
+}
+
+.empty-icon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+  background:var(--primary3);
+  color:#d9e5fa;
+  padding:28px 20px;
+}
+
+.footer-inner{
+  width:min(1250px,100%);
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-inner small{
+  color:#9fb2d3;
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+.print-only{
+  display:none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:950px){
+
+  .doc-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .stats-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .qr-layout{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:750px){
+
+  .navbar{
+    flex-wrap:wrap;
+  }
+
+  .menu-btn{
+    display:block;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:8px 11px;
+    border-radius:9px;
+  }
+
+  .nav-links{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .nav-links.show{
+    display:flex;
+  }
+
+  .nav-links button{
+    text-align:left;
+  }
+
+  .hero{
+    padding:32px 23px;
+  }
+
+  .hero h1{
+    font-size:36px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-group.full{
+    grid-column:auto;
+  }
+
+  .portal-grid,
+  .doc-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:480px){
+
+  .container{
+    width:min(100% - 20px,1250px);
+  }
+
+  main{
+    padding-top:20px;
+  }
+
+  .brand-title{
+    font-size:14px;
+  }
+
+  .brand-logo{
+    width:42px;
+    height:42px;
+  }
+
+  .stats-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+  .hero-actions{
+    flex-direction:column;
+  }
+
+}
+
+/* =========================================================
+   PRINT STYLES
+   ========================================================= */
+
+@media print{
+
+  header,
+  footer,
+  .no-print,
+  .modal,
+  #toastBox{
+    display:none!important;
+  }
+
+  body{
+    background:white;
+    color:black;
+  }
+
+  .print-only{
+    display:block;
+  }
+
+  main{
+    padding:0;
+  }
+
+  .card{
+    box-shadow:none;
+    border:1px solid #ddd;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
+
+<header>
+  <div class="navbar">
+
+    <a href="#/home" class="brand" onclick="closeMenu()">
+      <div class="brand-logo">B</div>
+      <div>
+        <div class="brand-title">Barangay</div>
+        <div class="brand-sub">e-Request System</div>
+      </div>
+    </a>
+
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+    <nav class="nav-links" id="navLinks">
+      <button onclick="go('#/home')">Home</button>
+      <button onclick="go('#/request')">Request Document</button>
+      <button onclick="go('#/track')">Track Status</button>
+      <button onclick="go('#/qr')">QR Code</button>
+      <button onclick="go('#/admin')">Admin Portal</button>
+      <button onclick="toggleTheme()">🌙</button>
+    </nav>
+
+  </div>
+</header>
+
+<!-- =======================================================
+     MAIN APP
+     ======================================================= -->
+
+<main class="container" id="app"></main>
+
+<!-- =======================================================
+     FOOTER
+     ======================================================= -->
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <strong>Barangay e-Request System</strong>
+      <br>
+      <small>Online document request prototype</small>
+    </div>
+
+    <div>
+      <small>
+        For prototype and educational purposes
+      </small>
+    </div>
+  </div>
+</footer>
+
+<!-- =======================================================
+     MODAL
+     ======================================================= -->
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <strong id="modalTitle">Details</strong>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body" id="modalBody"></div>
+
+  </div>
+</div>
+
+<!-- =======================================================
+     TOAST
+     ======================================================= -->
+
+<div id="toastBox"></div>
+
+<script>
+
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
+
+const DB_KEY = "barangay_requests_v1";
+const THEME_KEY = "barangay_theme";
+const RECENT_KEY = "barangay_recent_tracks";
+const ADMIN_SESSION = "barangay_admin_session";
+
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "barangay123";
+
+
+/* =========================================================
+   DOCUMENT TYPES
+   ========================================================= */
+
+const DOCUMENTS = [
+
+  {
+    code:"clearance",
+    name:"Barangay Clearance",
+    price:50,
+    processing:"1–2 working days",
+    icon:"📄",
+    description:"Certificate commonly required for employment and other transactions."
+  },
+
+  {
+    code:"residency",
+    name:"Certificate of Residency",
+    price:30,
+    processing:"Same day",
+    icon:"🏠",
+    description:"Proof that the resident is currently residing in the barangay."
+  },
+
+  {
+    code:"indigency",
+    name:"Certificate of Indigency",
+    price:0,
+    processing:"Same day",
+    icon:"📜",
+    description:"Certificate for qualified residents who need proof of indigency."
+  },
+
+  {
+    code:"business",
+    name:"Business Clearance",
+    price:150,
+    processing:"2–3 working days",
+    icon:"🏪",
+    description:"Document for businesses operating within the barangay."
+  },
+
+  {
+    code:"cedula",
+    name:"Community Tax Certificate",
+    price:25,
+    processing:"Same day",
+    icon:"🧾",
+    description:"Request assistance for Community Tax Certificate processing."
+  },
+
+  {
+    code:"barangay-id",
+    name:"Barangay ID",
+    price:75,
+    processing:"3–5 working days",
+    icon:"🪪",
+    description:"Identification document issued for qualified residents."
+  }
+
+];
+
+const STATUS_FLOW = [
+  "Pending",
+  "Processing",
+  "Ready",
+  "Completed"
+];
+
+const ALL_STATUSES = [
+  "Pending",
+  "Processing",
+  "Ready",
+  "Completed",
+  "Rejected"
+];
+
+
+/* =========================================================
+   APPLICATION STATE
+   ========================================================= */
+
+let formState = {
+  step:1,
+  docCode:"",
+  fullName:"",
+  birthdate:"",
+  address:"",
+  contact:"",
+  email:"",
+  copies:1,
+  purpose:"",
+  notes:"",
+  urgent:false
+};
+
+let adminFilter = {
+  search:"",
+  status:"All",
+  sort:"newest"
+};
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function $(id){
+  return document.getElementById(id);
+}
+
+function go(hash){
+  location.hash = hash;
+  closeMenu();
+}
+
+function toggleMenu(){
+  $("navLinks").classList.toggle("show");
+}
+
+function closeMenu(){
+  $("navLinks")?.classList.remove("show");
+}
+
+function esc(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function peso(value){
+  const amount = Number(value || 0);
+
+  if(amount === 0){
+    return "FREE";
+  }
+
+  return "₱" + amount.toLocaleString("en-PH",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function fmtDate(date){
+  if(!date) return "—";
+
+  return new Date(date).toLocaleString("en-PH",{
+    dateStyle:"medium",
+    timeStyle:"short"
+  });
+}
+
+function fmtDateOnly(date){
+  if(!date) return "—";
+
+  return new Date(date).toLocaleDateString("en-PH",{
+    year:"numeric",
+    month:"long",
+    day:"numeric"
+  });
+}
+
+function docByCode(code){
+  return DOCUMENTS.find(d => d.code === code);
+}
+
+function toast(message,type="info"){
+  const box = $("toastBox");
+
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.textContent = message;
+
+  box.appendChild(el);
+
+  setTimeout(()=>{
+    el.remove();
+  },3500);
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+function openModal(title,html){
+  $("modalTitle").textContent = title;
+  $("modalBody").innerHTML = html;
+  $("modal").classList.add("show");
+}
+
+function closeModal(){
+  $("modal").classList.remove("show");
+}
+
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+function applyTheme(){
+  const theme = localStorage.getItem(THEME_KEY) || "light";
+
+  document.documentElement.setAttribute(
+    "data-theme",
+    theme
+  );
+}
+
+function toggleTheme(){
+
+  const current =
+    document.documentElement.getAttribute("data-theme");
+
+  const next =
+    current === "dark" ? "light" : "dark";
+
+  document.documentElement.setAttribute(
+    "data-theme",
+    next
+  );
+
+  localStorage.setItem(
+    THEME_KEY,
+    next
+  );
+}
+
+
+/* =========================================================
+   DATABASE / LOCAL STORAGE
+   ========================================================= */
+
+function loadRequests(){
+
+  try{
+
+    const raw = localStorage.getItem(DB_KEY);
+
+    if(!raw){
+      return [];
+    }
+
+    const data = JSON.parse(raw);
+
+    return Array.isArray(data) ? data : [];
+
+  }catch(error){
+
+    console.error(error);
+
+    return [];
+
+  }
+
+}
+
+function saveRequests(requests){
+
+  localStorage.setItem(
+    DB_KEY,
+    JSON.stringify(requests)
+  );
+
+}
+
+function genRequestId(){
+
+  const now = new Date();
+
+  const year = now.getFullYear();
+
+  const random =
+    Math.floor(100000 + Math.random()*900000);
+
+  return `BRGY-${year}-${random}`;
+
+}
+
+function addRequest(data){
+
+  const requests = loadRequests();
+
+  const now = new Date().toISOString();
+
+  const request = {
+
+    id:genRequestId(),
+
+    ...data,
+
+    createdAt:now,
+
+    updatedAt:now,
+
+    status:"Pending",
+
+    adminNotes:"",
+
+    timeline:[
+      {
+        status:"Pending",
+        date:now,
+        note:"Request submitted successfully."
+      }
+    ]
+
+  };
+
+  requests.unshift(request);
+
+  saveRequests(requests);
+
+  return request;
+
+}
+
+function getRequest(id){
+
+  if(!id) return null;
+
+  return loadRequests().find(
+    r => r.id.toUpperCase() === id.toUpperCase()
+  ) || null;
+
+}
+
+function updateRequest(id,changes){
+
+  const requests = loadRequests();
+
+  const index = requests.findIndex(
+    r => r.id === id
+  );
+
+  if(index === -1){
+    return null;
+  }
+
+  requests[index] = {
+    ...requests[index],
+    ...changes,
+    updatedAt:new Date().toISOString()
+  };
+
+  saveRequests(requests);
+
+  return requests[index];
+
+}
+
+function deleteRequest(id){
+
+  const requests = loadRequests();
+
+  const filtered =
+    requests.filter(r => r.id !== id);
+
+  saveRequests(filtered);
+
+}
+
+function updateStatus(id,newStatus,note=""){
+
+  const requests = loadRequests();
+
+  const index =
+    requests.findIndex(r => r.id === id);
+
+  if(index === -1){
+    return null;
+  }
+
+  const request = requests[index];
+
+  request.status = newStatus;
+  request.updatedAt = new Date().toISOString();
+
+  if(note.trim()){
+    request.adminNotes = note.trim();
+  }
+
+  request.timeline =
+    Array.isArray(request.timeline)
+      ? request.timeline
+      : [];
+
+  request.timeline.push({
+
+    status:newStatus,
+
+    date:new Date().toISOString(),
+
+    note:
+      note.trim() ||
+      `Request status changed to ${newStatus}.`
+
+  });
+
+  requests[index] = request;
+
+  saveRequests(requests);
+
+  return request;
+
+}
+
+
+/* =========================================================
+   RECENT TRACKING
+   ========================================================= */
+
+function saveRecentTrack(id){
+
+  let list = [];
+
+  try{
+    list = JSON.parse(
+      localStorage.getItem(RECENT_KEY) || "[]"
+    );
+  }catch{
+    list = [];
+  }
+
+  list = list.filter(x => x !== id);
+
+  list.unshift(id);
+
+  list = list.slice(0,8);
+
+  localStorage.setItem(
+    RECENT_KEY,
+    JSON.stringify(list)
+  );
+
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+function renderHome(){
+
+  const docsHTML = DOCUMENTS.map(doc => `
+
+    <div class="doc-card">
+
+      <div class="doc-icon">
+        ${doc.icon}
+      </div>
+
+      <h3>${esc(doc.name)}</h3>
+
+      <p>${esc(doc.description)}</p>
+
+      <div class="doc-meta">
+        <span>${esc(doc.processing)}</span>
+        <span class="price">${peso(doc.price)}</span>
+      </div>
+
+      <button
+        class="btn btn-primary"
+        style="width:100%"
+        onclick="startRequest('${doc.code}')"
+      >
+        Request
+      </button>
+
+    </div>
+
+  `).join("");
+
+  $("app").innerHTML = `
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <span class="badge">
+          🏛️ BARANGAY ONLINE SERVICES
+        </span>
+
+        <h1>
+          Barangay<br>
+          e-Request System
+        </h1>
+
+        <p>
+          Mag-request ng barangay documents online.
+          Fill out the form, submit your request,
+          at gamitin ang Request ID para ma-track
+          ang status ng iyong request.
+        </p>
+
+        <div class="hero-actions">
+
+          <button
+            class="btn btn-gold"
+            onclick="go('#/request')"
+          >
+            📝 Request Document
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="go('#/track')"
+          >
+            🔎 Track Request
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <div class="section-title">
+        <h2>Available Documents</h2>
+        <p>
+          Piliin ang document na kailangan mo.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        ${docsHTML}
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <div class="section-title">
+        <h2>Choose Your Portal</h2>
+        <p>
+          Magkaibang access para sa resident at administrator.
+        </p>
+      </div>
+
+      <div class="portal-grid">
+
+        <div class="portal">
+
+          <div class="doc-icon">👤</div>
+
+          <h3>Resident Portal</h3>
+
+          <p>
+            Mag-fill up ng request form,
+            submit ng document request,
+            at i-track ang status.
+          </p>
+
+          <button
+            class="btn btn-primary"
+            onclick="go('#/request')"
+          >
+            Open Resident Portal
+          </button>
+
+        </div>
+
+
+        <div class="portal">
+
+          <div class="doc-icon">🛡️</div>
+
+          <h3>Admin Portal</h3>
+
+          <p>
+            Para sa authorized barangay personnel.
+            Manage requests at update ng status.
+          </p>
+
+          <button
+            class="btn btn-secondary"
+            onclick="go('#/admin')"
+          >
+            Open Admin Portal
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  `;
+
+}
+
+
+/* =========================================================
+   START REQUEST
+   ========================================================= */
+
+function startRequest(code){
+
+  formState = {
+    step:2,
+    docCode:code,
+    fullName:"",
+    birthdate:"",
+    address:"",
+    contact:"",
+    email:"",
+    copies:1,
+    purpose:"",
+    notes:"",
+    urgent:false
+  };
+
+  go("#/request");
+
+}
+
+
+/* =========================================================
+   REQUEST PAGE
+   ========================================================= */
+
+function renderRequest(){
+
+  const selected = docByCode(formState.docCode);
+
+  $("app").innerHTML = `
+
+    <div class="section-title">
+
+      <h2>Request Document</h2>
+
+      <p>
+        Complete the form below.
+      </p>
+
+    </div>
+
+
+    <div class="steps">
+
+      <div class="step ${formState.step >= 1 ? "active" : ""}">
+        1. Document
+      </div>
+
+      <div class="step ${formState.step >= 2 ? "active" : ""}">
+        2. Information
+      </div>
+
+      <div class="step ${formState.step >= 3 ? "active" : ""}">
+        3. Review
+      </div>
+
+    </div>
+
+
+    ${
+      formState.step === 1
+        ? requestStepOne()
+        : formState.step === 2
+        ? requestStepTwo(selected)
+        : requestStepThree(selected)
+    }
+
+  `;
+
+}
+
+
+function requestStepOne(){
+
+  return `
+
+    <div class="card">
+
+      <div class="card-body">
+
+        <h3 style="margin-bottom:15px">
+          Select Document
+        </h3>
+
+        <div class="doc-grid">
+
+          ${DOCUMENTS.map(doc => `
+
+            <div
+              class="doc-card"
+              onclick="selectDocument('${doc.code}')"
+            >
+
+              <div class="doc-icon">
+                ${doc.icon}
+              </div>
+
+              <h3>${esc(doc.name)}</h3>
+
+              <p>${esc(doc.description)}</p>
+
+              <div class="doc-meta">
+                <span>${esc(doc.processing)}</span>
+                <strong>${peso(doc.price)}</strong>
+              </div>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function selectDocument(code){
+
+  formState.docCode = code;
+  formState.step = 2;
+
+  renderRequest();
+
+}
+
+
+function requestStepTwo(selected){
+
+  return `
+
+    <div class="card">
+
+      <div class="card-body">
+
+        <div class="notice">
+
+          <strong>Selected:</strong>
+          ${selected ? esc(selected.name) : "Please select a document"}
+
+          ${
+            selected
+              ? ` — ${peso(selected.price)}`
+              : ""
+          }
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+
+            <label>Full Name *</label>
+
+            <input
+              id="fullName"
+              value="${esc(formState.fullName)}"
+              placeholder="Enter your complete name"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Birthdate *</label>
+
+            <input
+              type="date"
+              id="birthdate"
+              value="${esc(formState.birthdate)}"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Contact Number *</label>
+
+            <input
+              id="contact"
+              value="${esc(formState.contact)}"
+              placeholder="09XXXXXXXXX"
+            >
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Complete Address *</label>
+
+            <input
+              id="address"
+              value="${esc(formState.address)}"
+              placeholder="House No., Street, Barangay"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Email Address</label>
+
+            <input
+              type="email"
+              id="email"
+              value="${esc(formState.email)}"
+              placeholder="example@email.com"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Number of Copies</label>
+
+            <input
+              type="number"
+              id="copies"
+              min="1"
+              max="10"
+              value="${formState.copies}"
+            >
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Purpose *</label>
+
+            <input
+              id="purpose"
+              value="${esc(formState.purpose)}"
+              placeholder="Example: Employment, School, Business"
+            >
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label>Additional Notes</label>
+
+            <textarea
+              id="notes"
+              placeholder="Optional additional information"
+            >${esc(formState.notes)}</textarea>
+
+          </div>
+
+
+          <div class="form-group full">
+
+            <label style="display:flex;gap:8px;align-items:center">
+
+              <input
+                type="checkbox"
+                id="urgent"
+                ${formState.urgent ? "checked" : ""}
+                style="width:auto"
+              >
+
+              Mark as urgent request
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            justify-content:space-between;
+            margin-top:20px;
+            flex-wrap:wrap;
+          "
+        >
+
+          <button
+            class="btn btn-secondary"
+            onclick="goBackToDocuments()"
+          >
+            ← Back
+          </button>
+
+          <button
+            class="btn btn-primary"
+            onclick="nextToReview()"
+          >
+            Continue →
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function goBackToDocuments(){
+
+  formState.step = 1;
+
+  renderRequest();
+
+}
+
+
+/* =========================================================
+   FORM VALIDATION
+   ========================================================= */
+
+function readRequestForm(){
+
+  formState.fullName =
+    $("fullName").value.trim();
+
+  formState.birthdate =
+    $("birthdate").value;
+
+  formState.address =
+    $("address").value.trim();
+
+  formState.contact =
+    $("contact").value.trim();
+
+  formState.email =
+    $("email").value.trim();
+
+  formState.copies =
+    Math.max(
+      1,
+      Math.min(
+        10,
+        Number($("copies").value || 1)
+      )
+    );
+
+  formState.purpose =
+    $("purpose").value.trim();
+
+  formState.notes =
+    $("notes").value.trim();
+
+  formState.urgent =
+    $("urgent").checked;
+
+}
+
+
+function nextToReview(){
+
+  readRequestForm();
+
+  if(!formState.docCode){
+    toast("Please select a document.","error");
+    return;
+  }
+
+  if(!formState.fullName){
+    toast("Please enter your full name.","error");
+    return;
+  }
+
+  if(!formState.birthdate){
+    toast("Please enter your birthdate.","error");
+    return;
+  }
+
+  if(!formState.address){
+    toast("Please enter your address.","error");
+    return;
+  }
+
+  if(!formState.contact){
+    toast("Please enter your contact number.","error");
+    return;
+  }
+
+  if(!formState.purpose){
+    toast("Please enter the purpose.","error");
+    return;
+  }
+
+  formState.step = 3;
+
+  renderRequest();
+
+}
+
+
+/* =========================================================
+   REVIEW
+   ========================================================= */
+
+function requestStepThree(selected){
+
+  const total =
+    Number(selected?.price || 0) *
+    Number(formState.copies || 1);
+
+  return `
+
+    <div class="card">
+
+      <div class="card-body">
+
+        <div class="notice">
+
+          Please review your information before submitting.
+
+        </div>
+
+
+        <div class="form-grid">
+
+          ${reviewItem("Document",selected?.name)}
+
+          ${reviewItem("Estimated Fee",peso(total))}
+
+          ${reviewItem("Full Name",formState.fullName)}
+
+          ${reviewItem("Birthdate",formState.birthdate)}
+
+          ${reviewItem("Contact",formState.contact)}
+
+          ${reviewItem("Email",formState.email || "Not provided")}
+
+          ${reviewItem("Address",formState.address)}
+
+          ${reviewItem("Copies",formState.copies)}
+
+          ${reviewItem("Purpose",formState.purpose)}
+
+          ${reviewItem(
+            "Urgent",
+            formState.urgent ? "Yes" : "No"
+          )}
+
+          <div class="form-group full">
+
+            <label>Notes</label>
+
+            <div class="url-box">
+              ${esc(formState.notes || "None")}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            justify-content:space-between;
+            margin-top:20px;
+            flex-wrap:wrap;
+          "
+        >
+
+          <button
+            class="btn btn-secondary"
+            onclick="editRequestForm()"
+          >
+            ← Edit
+          </button>
+
+          <button
+            class="btn btn-success"
+            onclick="submitRequest()"
+          >
+            ✓ Submit Request
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function reviewItem(label,value){
+
+  return `
+
+    <div class="form-group">
+
+      <label>${esc(label)}</label>
+
+      <div class="url-box">
+        ${esc(value)}
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function editRequestForm(){
+
+  formState.step = 2;
+
+  renderRequest();
+
+}
+
+
+/* =========================================================
+   SUBMIT REQUEST
+   ========================================================= */
+
+function submitRequest(){
+
+  const selected = docByCode(formState.docCode);
+
+  if(!selected){
+    toast("Invalid document.","error");
+    return;
+  }
+
+  const total =
+    Number(selected.price || 0) *
+    Number(formState.copies || 1);
+
+  const request = addRequest({
+
+    documentCode:selected.code,
+
+    documentName:selected.name,
+
+    documentPrice:selected.price,
+
+    fullName:formState.fullName,
+
+    birthdate:formState.birthdate,
+
+    address:formState.address,
+
+    contact:formState.contact,
+
+    email:formState.email,
+
+    copies:formState.copies,
+
+    purpose:formState.purpose,
+
+    notes:formState.notes,
+
+    urgent:formState.urgent,
+
+    totalFee:total
+
+  });
+
+  saveRecentTrack(request.id);
+
+  go("#/success?id=" + encodeURIComponent(request.id));
+
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+function renderSuccess(id){
+
+  const request = getRequest(id);
+
+  if(!request){
+
+    $("app").innerHTML = `
+
+      <div class="card">
+        <div class="card-body empty">
+          <div class="empty-icon">❌</div>
+          <h2>Request Not Found</h2>
+          <p>The request could not be found.</p>
+        </div>
+      </div>
+
+    `;
+
+    return;
+  }
+
+  const trackUrl =
+    buildAppUrl("#/track?id=" + encodeURIComponent(request.id));
+
+  $("app").innerHTML = `
+
+    <div class="card">
+
+      <div class="card-body" style="text-align:center">
+
+        <div style="font-size:60px">
+          ✅
+        </div>
+
+        <h1>Request Submitted!</h1>
+
+        <p style="color:var(--muted);margin:8px 0 25px">
+          Your document request has been successfully submitted.
+        </p>
+
+
+        <div
+          style="
+            background:var(--info-bg);
+            padding:20px;
+            border-radius:15px;
+            max-width:500px;
+            margin:auto;
+          "
+        >
+
+          <small>YOUR REQUEST ID</small>
+
+          <h2 style="color:var(--primary);margin:8px">
+            ${esc(request.id)}
+          </h2>
+
+          <p style="font-size:12px;color:var(--muted)">
+            Keep this Request ID for tracking.
+          </p>
+
+        </div>
+
+
+        <div
+          id="successQR"
+          class="qr-container"
+        ></div>
+
+
+        <div
+          class="url-box"
+          style="max-width:600px;margin:auto"
+        >
+          ${esc(trackUrl)}
+        </div>
+
+
+        <div
+          style="
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:20px;
+          "
+        >
+
+          <button
+            class="btn btn-primary"
+            onclick="go('#/track?id=${encodeURIComponent(request.id)}')"
+          >
+            🔎 Track Request
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="copyText('${trackUrl.replaceAll("'","\\'")}')"
+          >
+            📋 Copy Link
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="printRequest('${request.id}')"
+          >
+            🖨️ Print
+          </button>
+
+          <button
+            class="btn btn-gold"
+            onclick="go('#/request')"
+          >
+            + New Request
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+  setTimeout(()=>{
+
+    generateQR(
+      "successQR",
+      trackUrl,
+      220
+    );
+
+  },100);
+
+}
+
+
+/* =========================================================
+   TRACK PAGE
+   ========================================================= */
+
+function renderTrack(id=""){
+
+  $("app").innerHTML = `
+
+    <div class="track-box">
+
+      <div class="section-title" style="text-align:center">
+
+        <h2>Track Request</h2>
+
+        <p>
+          Enter your Request ID.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-body">
+
+          <div class="form-group">
+
+            <label>Request ID</label>
+
+            <input
+              id="trackId"
+              value="${esc(id)}"
+              placeholder="Example: BRGY-2026-123456"
+              onkeydown="if(event.key==='Enter') trackRequest()"
+            >
+
+          </div>
+
+          <button
+            class="btn btn-primary"
+            style="width:100%;margin-top:12px"
+            onclick="trackRequest()"
+          >
+            🔎 Search Request
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div id="trackResult"></div>
+
+    </div>
+
+  `;
+
+  if(id){
+    setTimeout(trackRequest,50);
+  }
+
+}
+
+
+function trackRequest(){
+
+  const id =
+    $("trackId").value.trim();
+
+  if(!id){
+
+    toast("Enter your Request ID.","error");
+
+    return;
+  }
+
+  const request =
+    getRequest(id);
+
+  if(!request){
+
+    $("trackResult").innerHTML = `
+
+      <div class="card">
+        <div class="card-body empty">
+          <div class="empty-icon">🔍</div>
+          <h3>Request Not Found</h3>
+          <p>
+            Please check your Request ID.
+          </p>
+        </div>
+      </div>
+
+    `;
+
+    return;
+  }
+
+  saveRecentTrack(request.id);
+
+  renderTrackResult(request);
+
+}
+
+
+function renderTrackResult(request){
+
+  const timeline =
+    Array.isArray(request.timeline)
+      ? request.timeline
+      : [];
+
+  $("trackResult").innerHTML = `
+
+    <div class="card track-result">
+
+      <div class="card-body">
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            gap:15px;
+            flex-wrap:wrap;
+          "
+        >
+
+          <div>
+
+            <small style="color:var(--muted)">
+              Request ID
+            </small>
+
+            <h2>${esc(request.id)}</h2>
+
+          </div>
+
+          <div>
+            ${statusBadge(request.status)}
+          </div>
+
+        </div>
+
+
+        <hr
+          style="
+            border:0;
+            border-top:1px solid var(--border);
+            margin:20px 0;
+          "
+        >
+
+
+        <div class="form-grid">
+
+          ${reviewItem("Document",request.documentName)}
+
+          ${reviewItem("Applicant",request.fullName)}
+
+          ${reviewItem("Purpose",request.purpose)}
+
+          ${reviewItem("Submitted",fmtDate(request.createdAt))}
+
+          ${reviewItem("Last Updated",fmtDate(request.updatedAt))}
+
+          ${reviewItem("Fee",peso(request.totalFee))}
+
+        </div>
+
+
+        <h3 style="margin-top:25px">
+          Request Timeline
+        </h3>
+
+
+        <div class="timeline">
+
+          ${
+            timeline.length
+              ? timeline.map((item,index)=>`
+
+                <div
+                  class="timeline-item ${
+                    index === timeline.length-1
+                      ? "active"
+                      : ""
+                  }"
+                >
+
+                  <div class="timeline-dot"></div>
+
+                  <h4>
+                    ${esc(item.status)}
+                  </h4>
+
+                  <p>
+                    ${esc(item.note || "")}
+                  </p>
+
+                  <p>
+                    ${fmtDate(item.date)}
+                  </p>
+
+                </div>
+
+              `).join("")
+              : `
+                <p style="color:var(--muted)">
+                  No timeline available.
+                </p>
+              `
+          }
+
+        </div>
+
+
+        ${
+          request.adminNotes
+            ? `
+              <div class="notice">
+                <strong>Admin Note:</strong><br>
+                ${esc(request.adminNotes)}
+              </div>
+            `
+            : ""
+        }
+
+
+        <div style="margin-top:15px">
+
+          <button
+            class="btn btn-secondary"
+            onclick="printRequest('${request.id}')"
+          >
+            🖨️ Print Request
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   STATUS BADGE
+   ========================================================= */
+
+function statusBadge(status){
+
+  return `
+    <span class="status status-${esc(status)}">
+      ${esc(status)}
+    </span>
+  `;
+
+}
+
+
+/* =========================================================
+   QR PAGE
+   ========================================================= */
+
+function renderQR(){
+
+  const current =
+    buildAppUrl("#/request");
+
+  $("app").innerHTML = `
+
+    <div class="section-title">
+
+      <h2>Resident QR Code</h2>
+
+      <p>
+        I-scan ng resident ang QR para direktang pumunta
+        sa document request form.
+      </p>
+
+    </div>
+
+
+    <div class="qr-layout">
+
+      <div class="card">
+
+        <div class="card-body">
+
+          <h3>Generate QR Code</h3>
+
+          <p
+            style="
+              color:var(--muted);
+              font-size:13px;
+              margin:5px 0 15px;
+            "
+          >
+            Ilagay ang accessible website URL ng system.
+          </p>
+
+
+          <div class="notice warning">
+
+            <strong>Important:</strong>
+            Kung <b>file://</b> o <b>localhost</b> ang URL,
+            hindi iyon maa-access ng ibang cellphone.
+            Kailangan ng LAN IP o online hosting para ma-scan
+            mula sa ibang device.
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>Resident Portal URL</label>
+
+            <input
+              id="qrUrl"
+              value="${esc(current)}"
+              placeholder="https://your-site.com/"
+            >
+
+          </div>
+
+
+          <div
+            style="
+              display:flex;
+              gap:8px;
+              flex-wrap:wrap;
+              margin-top:12px;
+            "
+          >
+
+            <button
+              class="btn btn-primary"
+              onclick="generateResidentQR()"
+            >
+              Generate QR
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="copyText($('qrUrl').value)"
+            >
+              Copy URL
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="printQR()"
+            >
+              Print QR
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-body qr-box">
+
+          <h3>Scan to Request</h3>
+
+          <div
+            id="residentQR"
+            class="qr-container"
+          ></div>
+
+          <div
+            id="qrDisplayUrl"
+            class="url-box"
+          >
+            ${esc(current)}
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card" style="margin-top:20px">
+
+      <div class="card-body">
+
+        <h3>How to Use</h3>
+
+        <ol
+          style="
+            margin:12px 0 0 20px;
+            color:var(--muted);
+            font-size:14px;
+          "
+        >
+
+          <li>
+            Ilagay ang actual accessible URL.
+          </li>
+
+          <li>
+            Click <b>Generate QR</b>.
+          </li>
+
+          <li>
+            I-scan gamit ang cellphone.
+          </li>
+
+          <li>
+            Direct na bubukas ang Resident Request page.
+          </li>
+
+        </ol>
+
+      </div>
+
+    </div>
+
+  `;
+
+  setTimeout(()=>{
+    generateResidentQR();
+  },100);
+
+}
+
+
+function buildAppUrl(hash){
+
+  const base =
+    location.href
+      .split("#")[0]
+      .split("?")[0];
+
+  return base + hash;
+
+}
+
+
+function normalizeBaseUrl(value){
+
+  let url = value.trim();
+
+  if(!url){
+    return "";
+  }
+
+  if(
+    !/^https?:\/\//i.test(url) &&
+    !/^file:/i.test(url)
+  ){
+    url = "https://" + url;
+  }
+
+  return url
+    .split("#")[0]
+    .split("?")[0];
+
+}
+
+
+function makeRequestUrl(base){
+
+  const clean =
+    normalizeBaseUrl(base);
+
+  if(!clean){
+    return "";
+  }
+
+  return clean + "#/request";
+
+}
+
+
+function generateQR(elementId,text,size=250){
+
+  const container =
+    $(elementId);
+
+  if(!container){
+    return;
+  }
+
+  container.innerHTML = "";
+
+  if(!text){
+    return;
+  }
+
+  if(typeof QRCode === "undefined"){
+
+    container.innerHTML = `
+      <p style="color:var(--danger)">
+        QR library failed to load.
+      </p>
+    `;
+
+    return;
+  }
+
+  new QRCode(container,{
+
+    text:text,
+
+    width:size,
+
+    height:size,
+
+    colorDark:"#111111",
+
+    colorLight:"#ffffff",
+
+    correctLevel:QRCode.CorrectLevel.H
+
+  });
+
+}
+
+
+function generateResidentQR(){
+
+  const input =
+    $("qrUrl").value.trim();
+
+  const finalUrl =
+    makeRequestUrl(input);
+
+  if(!finalUrl){
+
+    toast("Please enter a URL.","error");
+
+    return;
+  }
+
+  $("qrUrl").value = finalUrl;
+
+  $("qrDisplayUrl").textContent =
+    finalUrl;
+
+  generateQR(
+    "residentQR",
+    finalUrl,
+    250
+  );
+
+  if(
+    finalUrl.startsWith("file:") ||
+    finalUrl.includes("localhost") ||
+    finalUrl.includes("127.0.0.1")
+  ){
+
+    toast(
+      "QR generated, pero hindi accessible sa ibang device ang local URL.",
+      "info"
+    );
+
+  }else{
+
+    toast(
+      "QR Code generated successfully.",
+      "success"
+    );
+
+  }
+
+}
+
+
+function printQR(){
+
+  const qr =
+    $("residentQR");
+
+  if(!qr || !qr.innerHTML){
+
+    toast("Generate the QR code first.","error");
+
+    return;
+  }
+
+  const url =
+    $("qrUrl").value;
+
+  const win =
+    window.open("","_blank");
+
+  win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+      <title>Barangay Resident QR Code</title>
+
+      <style>
+
+        body{
+          font-family:Arial;
+          text-align:center;
+          padding:40px;
+        }
+
+        img{
+          width:280px;
+          height:280px;
+        }
+
+        .url{
+          word-break:break-all;
+          margin-top:20px;
+          font-size:12px;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <h1>Barangay</h1>
+
+      <h2>Resident Document Request</h2>
+
+      ${qr.innerHTML}
+
+      <p>Scan this QR Code to request a document.</p>
+
+      <div class="url">
+        ${esc(url)}
+      </div>
+
+      <script>
+        window.onload=function(){
+          window.print();
+        }
+      <\/script>
+
+    </body>
+
+    </html>
+
+  `);
+
+  win.document.close();
+
+}
+
+
+/* =========================================================
+   ADMIN AUTH
+   ========================================================= */
+
+function isAdmin(){
+
+  return sessionStorage.getItem(
+    ADMIN_SESSION
+  ) === "true";
+
+}
+
+function adminLogin(){
+
+  const user =
+    $("adminUser").value.trim();
+
+  const pass =
+    $("adminPass").value;
+
+  if(
+    user === ADMIN_USER &&
+    pass === ADMIN_PASS
+  ){
+
+    sessionStorage.setItem(
+      ADMIN_SESSION,
+      "true"
+    );
+
+    toast(
+      "Admin login successful.",
+      "success"
+    );
+
+    setTimeout(()=>{
+      go("#/admin/dashboard");
+    },300);
+
+  }else{
+
+    toast(
+      "Invalid admin username or password.",
+      "error"
+    );
+
+  }
+
+}
+
+function adminLogout(){
+
+  sessionStorage.removeItem(
+    ADMIN_SESSION
+  );
+
+  toast(
+    "Admin logged out.",
+    "info"
+  );
+
+  setTimeout(()=>{
+    go("#/admin");
+  },300);
+
+}
+
+
+/* =========================================================
+   ADMIN LOGIN PAGE
+   ========================================================= */
+
+function renderAdminLogin(){
+
+  if(isAdmin()){
+
+    go("#/admin/dashboard");
+
+    return;
+  }
+
+  $("app").innerHTML = `
+
+    <div class="login-wrap">
+
+      <div class="card login-card">
+
+        <div class="login-logo">
+
+          <div class="brand-logo">
+            B
+          </div>
+
+          <h2 style="margin-top:12px">
+            Admin Portal
+          </h2>
+
+          <p
+            style="
+              color:var(--muted);
+              font-size:13px;
+            "
+          >
+            Barangay e-Request System
+          </p>
+
+        </div>
+
+
+        <div class="notice">
+          Authorized personnel only.
+        </div>
+
+
+        <div class="form-group">
+
+          <label>Username</label>
+
+          <input
+            id="adminUser"
+            placeholder="Enter username"
+            onkeydown="if(event.key==='Enter') adminLogin()"
+          >
+
+        </div>
+
+
+        <div
+          class="form-group"
+          style="margin-top:13px"
+        >
+
+          <label>Password</label>
+
+          <input
+            id="adminPass"
+            type="password"
+            placeholder="Enter password"
+            onkeydown="if(event.key==='Enter') adminLogin()"
+          >
+
+        </div>
+
+
+        <button
+          class="btn btn-primary"
+          style="width:100%;margin-top:18px"
+          onclick="adminLogin()"
+        >
+          🔐 Login
+        </button>
+
+
+        <div
+          style="
+            text-align:center;
+            margin-top:15px;
+            color:var(--muted);
+            font-size:11px;
+          "
+        >
+          Prototype credentials:<br>
+          <b>admin</b> / <b>barangay123</b>
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ADMIN DASHBOARD
+   ========================================================= */
+
+function renderAdminDashboard(){
+
+  if(!isAdmin()){
+
+    go("#/admin");
+
+    return;
+  }
+
+  const requests =
+    loadRequests();
+
+  const stats = {
+
+    total:requests.length,
+
+    pending:
+      requests.filter(r=>r.status==="Pending").length,
+
+    processing:
+      requests.filter(r=>r.status==="Processing").length,
+
+    ready:
+      requests.filter(r=>r.status==="Ready").length,
+
+    completed:
+      requests.filter(r=>r.status==="Completed").length
+
+  };
+
+
+  $("app").innerHTML = `
+
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        gap:15px;
+        align-items:center;
+        flex-wrap:wrap;
+        margin-bottom:20px;
+      "
+    >
+
+      <div>
+
+        <h2>Admin Dashboard</h2>
+
+        <p style="color:var(--muted);font-size:13px">
+          Manage Barangay document requests.
+        </p>
+
+      </div>
+
+      <button
+        class="btn btn-danger"
+        onclick="adminLogout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+
+    <div class="stats-grid">
+
+      ${statCard("Total",stats.total)}
+
+      ${statCard("Pending",stats.pending)}
+
+      ${statCard("Processing",stats.processing)}
+
+      ${statCard("Ready",stats.ready)}
+
+      ${statCard("Completed",stats.completed)}
+
+    </div>
+
+
+    <div
+      class="card"
+      style="margin-top:20px"
+    >
+
+      <div class="card-body">
+
+        <div class="admin-toolbar">
+
+          <div class="toolbar-left">
+
+            <input
+              id="adminSearch"
+              placeholder="Search name, ID, document..."
+              value="${esc(adminFilter.search)}"
+              oninput="adminFilter.search=this.value;renderAdminTable()"
+              style="min-width:220px"
+            >
+
+            <select
+              onchange="adminFilter.status=this.value;renderAdminTable()"
+            >
+
+              ${[
+                "All",
+                ...ALL_STATUSES
+              ].map(status=>`
+
+                <option
+                  value="${esc(status)}"
+                  ${
+                    adminFilter.status === status
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  ${esc(status)}
+                </option>
+
+              `).join("")}
+
+            </select>
+
+
+            <select
+              onchange="adminFilter.sort=this.value;renderAdminTable()"
+            >
+
+              <option
+                value="newest"
+                ${adminFilter.sort==="newest"?"selected":""}
+              >
+                Newest
+              </option>
+
+              <option
+                value="oldest"
+                ${adminFilter.sort==="oldest"?"selected":""}
+              >
+                Oldest
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="toolbar-right">
+
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="exportCSV()"
+            >
+              CSV
+            </button>
+
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="backupJSON()"
+            >
+              Backup
+            </button>
+
+            <button
+              class="btn btn-secondary btn-sm"
+              onclick="document.getElementById('importFile').click()"
+            >
+              Import
+            </button>
+
+            <input
+              type="file"
+              id="importFile"
+              accept=".json"
+              style="display:none"
+              onchange="importJSON(event)"
+            >
+
+            <button
+              class="btn btn-danger btn-sm"
+              onclick="clearAllRequests()"
+            >
+              Clear
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div id="adminTable"></div>
+
+      </div>
+
+    </div>
+
+  `;
+
+  renderAdminTable();
+
+}
+
+
+function statCard(label,value){
+
+  return `
+
+    <div class="stat">
+
+      <div class="stat-label">
+        ${esc(label)}
+      </div>
+
+      <div class="stat-value">
+        ${value}
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ADMIN TABLE
+   ========================================================= */
+
+function renderAdminTable(){
+
+  const container =
+    $("adminTable");
+
+  if(!container){
+    return;
+  }
+
+  let requests =
+    loadRequests();
+
+  const search =
+    adminFilter.search
+      .trim()
+      .toLowerCase();
+
+  if(search){
+
+    requests =
+      requests.filter(r => {
+
+        return [
+
+          r.id,
+          r.fullName,
+          r.documentName,
+          r.contact,
+          r.address,
+          r.purpose,
+          r.status
+
+        ]
+        .join(" ")
+        .toLowerCase()
+        .includes(search);
+
+      });
+
+  }
+
+  if(adminFilter.status !== "All"){
+
+    requests =
+      requests.filter(
+        r => r.status === adminFilter.status
+      );
+
+  }
+
+  requests.sort((a,b)=>{
+
+    const aTime =
+      new Date(a.createdAt).getTime();
+
+    const bTime =
+      new Date(b.createdAt).getTime();
+
+    return adminFilter.sort === "newest"
+      ? bTime-aTime
+      : aTime-bTime;
+
+  });
+
+
+  if(!requests.length){
+
+    container.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          📭
+        </div>
+
+        <h3>No requests found</h3>
+
+        <p>
+          No matching document requests.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML = `
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Request ID</th>
+            <th>Applicant</th>
+            <th>Document</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${requests.map(r=>`
+
+            <tr>
+
+              <td>
+                <strong>${esc(r.id)}</strong>
+              </td>
+
+              <td>
+                ${esc(r.fullName)}
+                <br>
+                <small style="color:var(--muted)">
+                  ${esc(r.contact)}
+                </small>
+              </td>
+
+              <td>
+                ${esc(r.documentName)}
+              </td>
+
+              <td>
+                ${fmtDate(r.createdAt)}
+              </td>
+
+              <td>
+                ${statusBadge(r.status)}
+              </td>
+
+              <td>
+
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="openAdminRequest('${r.id}')"
+                >
+                  View
+                </button>
+
+              </td>
+
+            </tr>
+
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   ADMIN REQUEST DETAILS
+   ========================================================= */
+
+function openAdminRequest(id){
+
+  const request =
+    getRequest(id);
+
+  if(!request){
+    toast("Request not found.","error");
+    return;
+  }
+
+  const nextOptions =
+    ALL_STATUSES
+      .map(status=>`
+
+        <option
+          value="${esc(status)}"
+          ${
+            status === request.status
+              ? "selected"
+              : ""
+          }
+        >
+          ${esc(status)}
+        </option>
+
+      `)
+      .join("");
+
+
+  openModal(
+    "Request Details",
+    `
+
+      <div class="notice">
+
+        <strong>${esc(request.id)}</strong>
+
+        <br>
+
+        Current status:
+        ${statusBadge(request.status)}
+
+      </div>
+
+
+      <div class="form-grid">
+
+        ${reviewItem("Applicant",request.fullName)}
+
+        ${reviewItem("Document",request.documentName)}
+
+        ${reviewItem("Birthdate",request.birthdate)}
+
+        ${reviewItem("Contact",request.contact)}
+
+        ${reviewItem("Email",request.email || "None")}
+
+        ${reviewItem("Copies",request.copies)}
+
+        ${reviewItem("Fee",peso(request.totalFee))}
+
+        ${reviewItem("Purpose",request.purpose)}
+
+        <div class="form-group full">
+
+          <label>Address</label>
+
+          <div class="url-box">
+            ${esc(request.address)}
+          </div>
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label>Resident Notes</label>
+
+          <div class="url-box">
+            ${esc(request.notes || "None")}
+          </div>
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label>Admin Status</label>
+
+          <select id="adminStatus">
+            ${nextOptions}
+          </select>
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label>Admin Notes</label>
+
+          <textarea
+            id="adminNotes"
+            placeholder="Add notes for this request..."
+          >${esc(request.adminNotes || "")}</textarea>
+
+        </div>
+
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          gap:8px;
+          flex-wrap:wrap;
+          margin-top:20px;
+        "
+      >
+
+        <button
+          class="btn btn-success"
+          onclick="saveAdminChanges('${request.id}')"
+        >
+          Save Changes
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          onclick="printRequest('${request.id}')"
+        >
+          Print
+        </button>
+
+        <button
+          class="btn btn-danger"
+          onclick="confirmDeleteRequest('${request.id}')"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    `
+  );
+
+}
+
+
+function saveAdminChanges(id){
+
+  const status =
+    $("adminStatus").value;
+
+  const notes =
+    $("adminNotes").value.trim();
+
+  const request =
+    getRequest(id);
+
+  if(!request){
+    return;
+  }
+
+  if(status !== request.status){
+
+    updateStatus(
+      id,
+      status,
+      notes
+    );
+
+  }else{
+
+    updateRequest(
+      id,
+      {
+        adminNotes:notes
+      }
+    );
+
+  }
+
+  closeModal();
+
+  toast(
+    "Request updated successfully.",
+    "success"
+  );
+
+  renderAdminDashboard();
+
+}
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+
+function confirmDeleteRequest(id){
+
+  const request =
+    getRequest(id);
+
+  if(!request){
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      `Delete request ${request.id}?`
+    );
+
+  if(!confirmed){
+    return;
+  }
+
+  deleteRequest(id);
+
+  closeModal();
+
+  toast(
+    "Request deleted.",
+    "success"
+  );
+
+  renderAdminDashboard();
+
+}
+
+
+/* =========================================================
+   DEMO DATA
+   ========================================================= */
+
+function seedDemoData(){
+
+  const existing =
+    loadRequests();
+
+  if(existing.length){
+    return false;
+  }
+
+  const samples = [
+
+    {
+      documentCode:"clearance",
+      documentName:"Barangay Clearance",
+      documentPrice:50,
+      fullName:"Juan Dela Cruz",
+      birthdate:"2001-05-10",
+      address:"Blk 3 Lot 12, Sampaguita St.",
+      contact:"09171234567",
+      email:"juan@example.com",
+      copies:1,
+      purpose:"Employment",
+      notes:"",
+      urgent:false,
+      totalFee:50,
+      status:"Pending"
+    },
+
+    {
+      documentCode:"residency",
+      documentName:"Certificate of Residency",
+      documentPrice:30,
+      fullName:"Maria Santos",
+      birthdate:"1998-02-15",
+      address:"45 Rizal Avenue",
+      contact:"09181234567",
+      email:"maria@example.com",
+      copies:1,
+      purpose:"School Requirement",
+      notes:"",
+      urgent:false,
+      totalFee:30,
+      status:"Processing"
+    },
+
+    {
+      documentCode:"indigency",
+      documentName:"Certificate of Indigency",
+      documentPrice:0,
+      fullName:"Pedro Reyes",
+      birthdate:"1985-08-20",
+      address:"Unit 8, Malvar Street",
+      contact:"09191234567",
+      email:"",
+      copies:1,
+      purpose:"Medical Assistance",
+      notes:"",
+      urgent:true,
+      totalFee:0,
+      status:"Ready"
+    }
+
+  ];
+
+
+  const requests =
+    samples.map((data,index)=>{
+
+      const created =
+        new Date(
+          Date.now() -
+          (index+1)*86400000
+        ).toISOString();
+
+      const request = {
+
+        id:`BRGY-2026-${100001+index}`,
+
+        ...data,
+
+        createdAt:created,
+
+        updatedAt:new Date().toISOString(),
+
+        adminNotes:
+          data.status === "Ready"
+            ? "Document is ready for release."
+            : "",
+
+        timeline:[
+          {
+            status:"Pending",
+            date:created,
+            note:"Request submitted successfully."
+          }
+        ]
+
+      };
+
+
+      if(data.status !== "Pending"){
+
+        request.timeline.push({
+
+          status:data.status,
+
+          date:new Date(
+            Date.now() -
+            index*3600000
+          ).toISOString(),
+
+          note:`Request is currently ${data.status}.`
+
+        });
+
+      }
+
+      return request;
+
+    });
+
+
+  saveRequests(requests);
+
+  return true;
+
+}
+
+
+/* =========================================================
+   ADMIN DATA MANAGEMENT
+   ========================================================= */
+
+function clearAllRequests(){
+
+  if(!isAdmin()){
+    return;
+  }
+
+  const confirmed =
+    confirm(
+      "Delete ALL requests?"
+    );
+
+  if(!confirmed){
+    return;
+  }
+
+  localStorage.removeItem(DB_KEY);
+
+  toast(
+    "All requests cleared.",
+    "success"
+  );
+
+  renderAdminDashboard();
+
+}
+
+
+function backupJSON(){
+
+  const data =
+    JSON.stringify(
+      loadRequests(),
+      null,
+      2
+    );
+
+  downloadFile(
+    data,
+    "barangay-requests-backup.json",
+    "application/json"
+  );
+
+  toast(
+    "Backup downloaded.",
+    "success"
+  );
+
+}
+
+
+function exportCSV(){
+
+  const requests =
+    loadRequests();
+
+  if(!requests.length){
+
+    toast(
+      "No requests to export.",
+      "error"
+    );
+
+    return;
+  }
+
+  const headers = [
+
+    "Request ID",
+    "Applicant",
+    "Document",
+    "Contact",
+    "Email",
+    "Address",
+    "Purpose",
+    "Copies",
+    "Fee",
+    "Status",
+    "Created",
+    "Updated"
+
+  ];
+
+
+  const rows =
+    requests.map(r=>[
+
+      r.id,
+      r.fullName,
+      r.documentName,
+      r.contact,
+      r.email,
+      r.address,
+      r.purpose,
+      r.copies,
+      r.totalFee,
+      r.status,
+      r.createdAt,
+      r.updatedAt
+
+    ]);
+
+
+  const csv = [
+
+    headers,
+
+    ...rows
+
+  ].map(row=>
+
+    row.map(value => {
+
+      const text =
+        String(value ?? "");
+
+      return `"${text.replaceAll('"','""')}"`;
+
+    }).join(",")
+
+  ).join("\n");
+
+
+  downloadFile(
+    csv,
+    "barangay-requests.csv",
+    "text/csv"
+  );
+
+  toast(
+    "CSV exported.",
+    "success"
+  );
+
+}
+
+
+function importJSON(event){
+
+  const file =
+    event.target.files?.[0];
+
+  if(!file){
+    return;
+  }
+
+  const reader =
+    new FileReader();
+
+  reader.onload = function(){
+
+    try{
+
+      const data =
+        JSON.parse(reader.result);
+
+      if(!Array.isArray(data)){
+        throw new Error("Invalid format");
+      }
+
+      saveRequests(data);
+
+      toast(
+        `${data.length} requests imported.`,
+        "success"
+      );
+
+      renderAdminDashboard();
+
+    }catch(error){
+
+      console.error(error);
+
+      toast(
+        "Invalid JSON backup file.",
+        "error"
+      );
+
+    }
+
+  };
+
+  reader.readAsText(file);
+
+}
+
+
+function downloadFile(content,filename,type){
+
+  const blob =
+    new Blob(
+      [content],
+      {type:type}
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download = filename;
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   PRINT REQUEST
+   ========================================================= */
+
+function printRequest(id){
+
+  const request =
+    getRequest(id);
+
+  if(!request){
+    toast("Request not found.","error");
+    return;
+  }
+
+  const win =
+    window.open("","_blank");
+
+  win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+      <title>${esc(request.id)}</title>
+
+      <style>
+
+        body{
+          font-family:Arial;
+          padding:30px;
+          color:#111;
+        }
+
+        .header{
+          text-align:center;
+          border-bottom:2px solid #111;
+          padding-bottom:15px;
+          margin-bottom:20px;
+        }
+
+        .row{
+          display:flex;
+          justify-content:space-between;
+          gap:20px;
+          padding:9px 0;
+          border-bottom:1px solid #ddd;
+        }
+
+        .label{
+          font-weight:bold;
+        }
+
+        .status{
+          font-weight:bold;
+        }
+
+        .qr{
+          text-align:center;
+          margin-top:25px;
+        }
+
+        .note{
+          margin-top:25px;
+          padding:15px;
+          border:1px solid #ccc;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <div class="header">
+
+        <h1>Barangay</h1>
+
+        <h2>Document Request Slip</h2>
+
+        <strong>
+          ${esc(request.id)}
+        </strong>
+
+      </div>
+
+
+      <div class="row">
+        <span class="label">Applicant</span>
+        <span>${esc(request.fullName)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Document</span>
+        <span>${esc(request.documentName)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Birthdate</span>
+        <span>${esc(request.birthdate)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Contact</span>
+        <span>${esc(request.contact)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Address</span>
+        <span>${esc(request.address)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Purpose</span>
+        <span>${esc(request.purpose)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Copies</span>
+        <span>${esc(request.copies)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Fee</span>
+        <span>${peso(request.totalFee)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Status</span>
+        <span class="status">${esc(request.status)}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">Submitted</span>
+        <span>${fmtDate(request.createdAt)}</span>
+      </div>
+
+
+      ${
+        request.adminNotes
+          ? `
+            <div class="note">
+              <strong>Admin Notes</strong>
+              <br><br>
+              ${esc(request.adminNotes)}
+            </div>
+          `
+          : ""
+      }
+
+
+      <div class="qr">
+
+        <p>
+          Scan to track this request:
+        </p>
+
+        <div id="qr"></div>
+
+        <small>
+          ${esc(
+            buildAppUrl(
+              "#/track?id="+
+              encodeURIComponent(request.id)
+            )
+          )}
+        </small>
+
+      </div>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+
+      <script>
+
+        new QRCode(
+          document.getElementById("qr"),
+          {
+            text:${JSON.stringify(
+              buildAppUrl(
+                "#/track?id="+
+                encodeURIComponent(request.id)
+              )
+            )},
+            width:180,
+            height:180
+          }
+        );
+
+        window.onload=function(){
+          setTimeout(function(){
+            window.print();
+          },500);
+        };
+
+      <\/script>
+
+    </body>
+
+    </html>
+
+  `);
+
+  win.document.close();
+
+}
+
+
+/* =========================================================
+   COPY
+   ========================================================= */
+
+async function copyText(text){
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    toast(
+      "Copied to clipboard.",
+      "success"
+    );
+
+  }catch{
+
+    toast(
+      "Unable to copy automatically.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+
+function router(){
+
+  const hash =
+    location.hash || "#/home";
+
+  if(hash === "#/home"){
+    renderHome();
+    return;
+  }
+
+  if(hash === "#/request"){
+    renderRequest();
+    return;
+  }
+
+  if(hash === "#/track"){
+
+    renderTrack();
+
+    return;
+  }
+
+  if(hash.startsWith("#/track?")){
+
+    const params =
+      new URLSearchParams(
+        hash.split("?")[1]
+      );
+
+    renderTrack(
+      params.get("id") || ""
+    );
+
+    return;
+  }
+
+  if(hash === "#/qr"){
+
+    renderQR();
+
+    return;
+  }
+
+  if(hash === "#/admin"){
+
+    renderAdminLogin();
+
+    return;
+  }
+
+  if(hash === "#/admin/dashboard"){
+
+    renderAdminDashboard();
+
+    return;
+  }
+
+  if(hash.startsWith("#/success?")){
+
+    const params =
+      new URLSearchParams(
+        hash.split("?")[1]
+      );
+
+    renderSuccess(
+      params.get("id")
+    );
+
+    return;
+  }
+
+  go("#/home");
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+applyTheme();
+
+window.addEventListener(
+  "hashchange",
+  router
+);
+
+window.addEventListener(
+  "load",
+  ()=>{
+    router();
+  }
+);
+
+
+/* =========================================================
+   OPTIONAL DEMO DATA
+   ========================================================= */
+
+/*
+   Hindi automatic na nagse-seed ng demo data
+   para malinis ang system sa unang open.
+
+   Para magkaroon ng sample data:
+   Open Admin Portal > Login
+   then sa browser console:
+   seedDemoData();
+*/
+
+</script>
+
+</body>
+</html>
