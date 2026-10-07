@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -1224,7 +1224,13 @@ footer{
   from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
 
-  const firebaseConfig = {
+  /*
+  CROSS-DEVICE SYNC:
+  Resident phones and admin computers must use
+  this same Firebase project and the same
+  Firestore "requests" collection.
+*/
+const firebaseConfig = {
 
     apiKey:
       "AIzaSyBpkygGY9pOKiCTSaNNnF6xML7auZ9YJ80",
@@ -1749,20 +1755,14 @@ async function initializeFirestore(){
 
   firebaseStarting = true;
 
-
   try{
 
     await waitForFirebase();
 
-
     if(firestoreUnsubscribe){
-
       firestoreUnsubscribe();
-
       firestoreUnsubscribe = null;
-
     }
-
 
     const requestsRef =
       window.firebaseCollection(
@@ -1770,12 +1770,12 @@ async function initializeFirestore(){
         "requests"
       );
 
-
     firestoreUnsubscribe =
       window.firebaseOnSnapshot(
-
         requestsRef,
-
+        {
+          includeMetadataChanges:true
+        },
         snapshot=>{
 
           firestoreRequests =
@@ -1785,138 +1785,92 @@ async function initializeFirestore(){
                 const rawData =
                   firebaseDocSnapshot.data();
 
+                return normalizeRequest({
 
-                /*
-                  Normalize every Firebase document.
-                  This means old records without status
-                  are counted as Pending automatically.
-                */
+                  firestoreId:
+                    firebaseDocSnapshot.id,
 
-                const normalized =
-                  normalizeRequest({
+                  ...rawData
 
-                    firestoreId:
-                      firebaseDocSnapshot.id,
-
-                    ...rawData
-
-                  });
-
-
-                return normalized;
+                });
 
               }
             );
 
-
           firestoreRequests.sort(
-            (a,b)=>{
-
-              const aTime =
-                new Date(
-                  a.createdAt || 0
-                ).getTime();
-
-              const bTime =
-                new Date(
-                  b.createdAt || 0
-                ).getTime();
-
-              return bTime - aTime;
-
-            }
+            (a,b)=>
+              new Date(
+                b.createdAt || 0
+              ).getTime() -
+              new Date(
+                a.createdAt || 0
+              ).getTime()
           );
-
 
           firestoreLoaded = true;
 
-
+          /*
+            Re-render the admin dashboard EVERY TIME
+            Firestore receives a change. This is what
+            makes a request submitted from a phone
+            appear automatically on the admin computer.
+          */
           const hash =
             location.hash || "#/home";
 
-
           if(
-            hash ===
-            "#/admin/dashboard" &&
+            hash === "#/admin/dashboard" &&
             isAdmin()
           ){
-
             renderAdminDashboard();
-
           }
 
-
-          if(
-            hash.startsWith(
-              "#/track?"
-            )
-          ){
+          /*
+            Keep tracking/success pages updated too.
+          */
+          if(hash.startsWith("#/track?")){
 
             const params =
               new URLSearchParams(
                 hash.split("?")[1]
               );
 
-
             const id =
               params.get("id") || "";
-
 
             if(id){
 
               const request =
                 getRequest(id);
 
+              const result =
+                $("trackResult");
 
-              if(request){
-
-                const result =
-                  $("trackResult");
-
-
-                if(result){
-
-                  renderTrackResult(
-                    request
-                  );
-
-                }
-
+              if(request && result){
+                renderTrackResult(request);
               }
 
             }
 
           }
 
-
-          if(
-            hash.startsWith(
-              "#/success?"
-            )
-          ){
+          if(hash.startsWith("#/success?")){
 
             const params =
               new URLSearchParams(
                 hash.split("?")[1]
               );
 
-
             const id =
               params.get("id");
-
 
             if(id){
 
               const request =
                 getRequest(id);
 
-
               if(request){
-
-                renderSuccessFromData(
-                  request
-                );
-
+                renderSuccessFromData(request);
               }
 
             }
@@ -1924,7 +1878,6 @@ async function initializeFirestore(){
           }
 
         },
-
         error=>{
 
           console.error(
@@ -1932,9 +1885,7 @@ async function initializeFirestore(){
             error
           );
 
-
           firestoreLoaded = true;
-
 
           toast(
             firebaseErrorMessage(error),
@@ -1942,9 +1893,7 @@ async function initializeFirestore(){
           );
 
         }
-
       );
-
 
   }catch(error){
 
@@ -1953,9 +1902,7 @@ async function initializeFirestore(){
       error
     );
 
-
     firestoreLoaded = true;
-
 
     toast(
       firebaseErrorMessage(error),
@@ -1969,7 +1916,6 @@ async function initializeFirestore(){
   }
 
 }
-
 
 /* =========================================================
    DATABASE / FIRESTORE
@@ -3434,6 +3380,22 @@ function editRequestForm(){
    ========================================================= */
 
 async function submitRequest(){
+
+  /*
+    IMPORTANT:
+    The resident's phone must have an active
+    Firestore connection before submitting.
+  */
+  try{
+    await waitForFirebase();
+  }catch(error){
+    console.error(error);
+    toast(
+      "Hindi makakonekta sa database. Pakicheck ang internet at Firebase.",
+      "error"
+    );
+    return;
+  }
 
   const selected =
     docByCode(
@@ -7450,9 +7412,7 @@ window.addEventListener(
 window.addEventListener(
   "firebase-ready",
   ()=>{
-
     initializeFirestore();
-
   }
 );
 
