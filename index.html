@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -699,6 +700,89 @@ tr:hover td{
 }
 
 /* =========================================================
+   MOBILE ADMIN REQUEST CARDS
+   ========================================================= */
+
+.admin-mobile-list{
+  display:none;
+}
+
+.admin-request-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+  box-shadow:0 6px 20px rgba(15,35,75,.07);
+}
+
+.admin-request-card:last-child{
+  margin-bottom:0;
+}
+
+.admin-request-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.admin-request-id{
+  font-size:14px;
+  font-weight:900;
+  word-break:break-word;
+}
+
+.admin-request-date{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.admin-request-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.admin-info-item{
+  padding:10px;
+  border-radius:10px;
+  background:var(--bg);
+  min-width:0;
+}
+
+.admin-info-label{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  margin-bottom:3px;
+}
+
+.admin-info-value{
+  font-size:12px;
+  font-weight:700;
+  word-break:break-word;
+}
+
+.admin-request-action{
+  display:flex;
+  gap:8px;
+}
+
+.admin-request-action .btn{
+  width:100%;
+}
+
+.mobile-status{
+  flex-shrink:0;
+}
+
+/* =========================================================
    LOGIN
    ========================================================= */
 
@@ -976,6 +1060,63 @@ footer{
 
 }
 
+@media(max-width:600px){
+
+  /* =======================================================
+     MOBILE ADMIN REQUESTS
+     ======================================================= */
+
+  .table-wrap{
+    display:none;
+  }
+
+  .admin-mobile-list{
+    display:block;
+  }
+
+  .admin-toolbar{
+    align-items:stretch;
+  }
+
+  .toolbar-left,
+  .toolbar-right{
+    width:100%;
+  }
+
+  .toolbar-left input,
+  .toolbar-left select{
+    width:100%;
+    min-width:0!important;
+  }
+
+  .toolbar-left{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .toolbar-right{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .toolbar-right .btn{
+    width:100%;
+  }
+
+  .admin-request-info{
+    grid-template-columns:1fr;
+  }
+
+  .admin-request-top{
+    align-items:flex-start;
+  }
+
+  .admin-request-action{
+    flex-direction:column;
+  }
+
+}
+
 @media(max-width:480px){
 
   .container{
@@ -1005,6 +1146,22 @@ footer{
 
   .hero-actions{
     flex-direction:column;
+  }
+
+  .toolbar-right{
+    grid-template-columns:1fr;
+  }
+
+  .admin-request-card{
+    padding:14px;
+  }
+
+  .admin-request-top{
+    flex-direction:column;
+  }
+
+  .mobile-status{
+    align-self:flex-start;
   }
 
 }
@@ -1042,6 +1199,112 @@ footer{
   }
 }
 </style>
+
+<!-- =======================================================
+     FIREBASE
+     ======================================================= -->
+
+<script type="module">
+
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    serverTimestamp,
+    writeBatch
+  }
+  from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+
+    apiKey:
+      "AIzaSyBpkygGY9pOKiCTSaNNnF6xML7auZ9YJ80",
+
+    authDomain:
+      "barangay-e-request-d2661.firebaseapp.com",
+
+    projectId:
+      "barangay-e-request-d2661",
+
+    storageBucket:
+      "barangay-e-request-d2661.firebasestorage.app",
+
+    messagingSenderId:
+      "406443499005",
+
+    appId:
+      "1:406443499005:web:5f78fda2f792e6e0f90d94"
+
+  };
+
+
+  try{
+
+    const firebaseApp =
+      initializeApp(firebaseConfig);
+
+    const db =
+      getFirestore(firebaseApp);
+
+
+    window.firebaseDB = db;
+
+    window.firebaseCollection = collection;
+
+    window.firebaseAddDoc = addDoc;
+
+    window.firebaseGetDocs = getDocs;
+
+    window.firebaseUpdateDoc = updateDoc;
+
+    window.firebaseDeleteDoc = deleteDoc;
+
+    window.firebaseDoc = doc;
+
+    window.firebaseOnSnapshot = onSnapshot;
+
+    window.firebaseServerTimestamp =
+      serverTimestamp;
+
+    window.firebaseWriteBatch =
+      writeBatch;
+
+
+    window.firebaseReady = true;
+
+    window.dispatchEvent(
+      new Event("firebase-ready")
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Firebase initialization error:",
+      error
+    );
+
+    window.firebaseReady = false;
+
+    window.firebaseError = error;
+
+    window.dispatchEvent(
+      new Event("firebase-error")
+    );
+
+  }
+
+</script>
+
 </head>
 
 <body>
@@ -1051,78 +1314,167 @@ footer{
      ======================================================= -->
 
 <header>
+
   <div class="navbar">
 
-    <a href="#/home" class="brand" onclick="closeMenu()">
-      <div class="brand-logo">B</div>
-      <div>
-        <div class="brand-title">Barangay</div>
-        <div class="brand-sub">e-Request System</div>
+    <a
+      href="#/home"
+      class="brand"
+      onclick="closeMenu()"
+    >
+
+      <div class="brand-logo">
+        B
       </div>
+
+      <div>
+
+        <div class="brand-title">
+          Barangay
+        </div>
+
+        <div class="brand-sub">
+          e-Request System
+        </div>
+
+      </div>
+
     </a>
 
-    <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
-    <nav class="nav-links" id="navLinks">
-      <button onclick="go('#/home')">Home</button>
-      <button onclick="go('#/request')">Request Document</button>
-      <button onclick="go('#/track')">Track Status</button>
-      <button onclick="go('#/qr')">QR Code</button>
-      <button onclick="go('#/admin')">Admin Portal</button>
-      <button onclick="toggleTheme()">🌙</button>
+    <button
+      class="menu-btn"
+      onclick="toggleMenu()"
+    >
+      ☰
+    </button>
+
+
+    <nav
+      class="nav-links"
+      id="navLinks"
+    >
+
+      <button onclick="go('#/home')">
+        Home
+      </button>
+
+      <button onclick="go('#/request')">
+        Request Document
+      </button>
+
+      <button onclick="go('#/track')">
+        Track Status
+      </button>
+
+      <button onclick="go('#/qr')">
+        QR Code
+      </button>
+
+      <button onclick="go('#/admin')">
+        Admin Portal
+      </button>
+
+      <button onclick="toggleTheme()">
+        🌙
+      </button>
+
     </nav>
 
   </div>
+
 </header>
+
 
 <!-- =======================================================
      MAIN APP
      ======================================================= -->
 
-<main class="container" id="app"></main>
+<main
+  class="container"
+  id="app"
+></main>
+
 
 <!-- =======================================================
      FOOTER
      ======================================================= -->
 
 <footer>
+
   <div class="footer-inner">
-    <div>
-      <strong>Barangay e-Request System</strong>
-      <br>
-      <small>Online document request prototype</small>
-    </div>
 
     <div>
+
+      <strong>
+        Barangay e-Request System
+      </strong>
+
+      <br>
+
+      <small>
+        Online document request prototype
+      </small>
+
+    </div>
+
+
+    <div>
+
       <small>
         For prototype and educational purposes
       </small>
+
     </div>
+
   </div>
+
 </footer>
+
 
 <!-- =======================================================
      MODAL
      ======================================================= -->
 
-<div class="modal" id="modal">
+<div
+  class="modal"
+  id="modal"
+>
+
   <div class="modal-card">
 
     <div class="modal-header">
-      <strong id="modalTitle">Details</strong>
-      <button class="modal-close" onclick="closeModal()">×</button>
+
+      <strong id="modalTitle">
+        Details
+      </strong>
+
+      <button
+        class="modal-close"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
+
     </div>
 
-    <div class="modal-body" id="modalBody"></div>
+
+    <div
+      class="modal-body"
+      id="modalBody"
+    ></div>
 
   </div>
+
 </div>
+
 
 <!-- =======================================================
      TOAST
      ======================================================= -->
 
 <div id="toastBox"></div>
+
 
 <script>
 
@@ -1131,409 +1483,1011 @@ footer{
    ========================================================= */
 
 const DB_KEY = "barangay_requests_v1";
+
 const THEME_KEY = "barangay_theme";
+
 const RECENT_KEY = "barangay_recent_tracks";
-const ADMIN_SESSION = "barangay_admin_session";
 
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "barangay123";
+const ADMIN_SESSION =
+  "barangay_admin_session";
+
+const ADMIN_USER =
+  "admin";
+
+const ADMIN_PASS =
+  "barangay123";
 
 
 /* =========================================================
-   DOCUMENT TYPES
+   FIREBASE STATE
    ========================================================= */
 
-const DOCUMENTS = [
+let firestoreRequests = [];
 
-  {
-    code:"clearance",
-    name:"Barangay Clearance",
-    price:50,
-    processing:"1–2 working days",
-    icon:"📄",
-    description:"Certificate commonly required for employment and other transactions."
-  },
+let firestoreLoaded = false;
 
-  {
-    code:"residency",
-    name:"Certificate of Residency",
-    price:30,
-    processing:"Same day",
-    icon:"🏠",
-    description:"Proof that the resident is currently residing in the barangay."
-  },
+let firestoreUnsubscribe = null;
 
-  {
-    code:"indigency",
-    name:"Certificate of Indigency",
-    price:0,
-    processing:"Same day",
-    icon:"📜",
-    description:"Certificate for qualified residents who need proof of indigency."
-  },
+let firebaseStarting = false;
 
-  {
-    code:"business",
-    name:"Business Clearance",
-    price:150,
-    processing:"2–3 working days",
-    icon:"🏪",
-    description:"Document for businesses operating within the barangay."
-  },
 
-  {
-    code:"cedula",
-    name:"Community Tax Certificate",
-    price:25,
-    processing:"Same day",
-    icon:"🧾",
-    description:"Request assistance for Community Tax Certificate processing."
-  },
+/* =========================================================
+   WAIT FOR FIREBASE
+   ========================================================= */
 
-  {
-    code:"barangay-id",
-    name:"Barangay ID",
-    price:75,
-    processing:"3–5 working days",
-    icon:"🪪",
-    description:"Identification document issued for qualified residents."
+function waitForFirebase(){
+
+  return new Promise((resolve,reject)=>{
+
+    if(
+      window.firebaseReady &&
+      window.firebaseDB
+    ){
+
+      resolve(true);
+
+      return;
+    }
+
+
+    if(window.firebaseError){
+
+      reject(
+        window.firebaseError
+      );
+
+      return;
+    }
+
+
+    let attempts = 0;
+
+
+    const timer =
+      setInterval(()=>{
+
+        attempts++;
+
+
+        if(
+          window.firebaseReady &&
+          window.firebaseDB
+        ){
+
+          clearInterval(timer);
+
+          resolve(true);
+
+          return;
+        }
+
+
+        if(window.firebaseError){
+
+          clearInterval(timer);
+
+          reject(
+            window.firebaseError
+          );
+
+          return;
+        }
+
+
+        if(attempts >= 100){
+
+          clearInterval(timer);
+
+          reject(
+            new Error(
+              "Firebase failed to initialize."
+            )
+          );
+
+        }
+
+      },100);
+
+  });
+
+}
+
+
+/* =========================================================
+   FIREBASE ERROR
+   ========================================================= */
+
+function firebaseErrorMessage(error){
+
+  console.error(
+    "Firebase error:",
+    error
+  );
+
+
+  if(
+    error &&
+    error.code ===
+    "permission-denied"
+  ){
+
+    return (
+      "Firebase permission denied. " +
+      "Check Firestore Rules."
+    );
+
   }
 
-];
 
-const STATUS_FLOW = [
-  "Pending",
-  "Processing",
-  "Ready",
-  "Completed"
-];
+  if(
+    error &&
+    error.code ===
+    "failed-precondition"
+  ){
 
-const ALL_STATUSES = [
-  "Pending",
-  "Processing",
-  "Ready",
-  "Completed",
-  "Rejected"
-];
+    return (
+      "Firestore is not ready. " +
+      "Check Firebase Firestore Database."
+    );
 
-
-/* =========================================================
-   APPLICATION STATE
-   ========================================================= */
-
-let formState = {
-  step:1,
-  docCode:"",
-  fullName:"",
-  birthdate:"",
-  address:"",
-  contact:"",
-  email:"",
-  copies:1,
-  purpose:"",
-  notes:"",
-  urgent:false
-};
-
-let adminFilter = {
-  search:"",
-  status:"All",
-  sort:"newest"
-};
-
-
-/* =========================================================
-   BASIC HELPERS
-   ========================================================= */
-
-function $(id){
-  return document.getElementById(id);
-}
-
-function go(hash){
-  location.hash = hash;
-  closeMenu();
-}
-
-function toggleMenu(){
-  $("navLinks").classList.toggle("show");
-}
-
-function closeMenu(){
-  $("navLinks")?.classList.remove("show");
-}
-
-function esc(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function peso(value){
-  const amount = Number(value || 0);
-
-  if(amount === 0){
-    return "FREE";
   }
 
-  return "₱" + amount.toLocaleString("en-PH",{
-    minimumFractionDigits:2,
-    maximumFractionDigits:2
-  });
-}
 
-function fmtDate(date){
-  if(!date) return "—";
+  if(
+    error &&
+    error.code ===
+    "unavailable"
+  ){
 
-  return new Date(date).toLocaleString("en-PH",{
-    dateStyle:"medium",
-    timeStyle:"short"
-  });
-}
+    return (
+      "Firebase is unavailable. " +
+      "Check your internet connection."
+    );
 
-function fmtDateOnly(date){
-  if(!date) return "—";
+  }
 
-  return new Date(date).toLocaleDateString("en-PH",{
-    year:"numeric",
-    month:"long",
-    day:"numeric"
-  });
-}
 
-function docByCode(code){
-  return DOCUMENTS.find(d => d.code === code);
-}
+  return (
+    error?.message ||
+    "Firebase operation failed."
+  );
 
-function toast(message,type="info"){
-  const box = $("toastBox");
-
-  const el = document.createElement("div");
-  el.className = "toast " + type;
-  el.textContent = message;
-
-  box.appendChild(el);
-
-  setTimeout(()=>{
-    el.remove();
-  },3500);
 }
 
 
 /* =========================================================
-   MODAL
+   NORMALIZE FIREBASE REQUEST
+   =========================================================
+   
+   IMPORTANT:
+   Old Firebase documents may not have a status.
+   Those documents are automatically treated as Pending.
+   
+   New requests are also guaranteed to have Pending.
    ========================================================= */
 
-function openModal(title,html){
-  $("modalTitle").textContent = title;
-  $("modalBody").innerHTML = html;
-  $("modal").classList.add("show");
-}
+function normalizeRequest(request){
 
-function closeModal(){
-  $("modal").classList.remove("show");
+  if(!request){
+
+    return request;
+
+  }
+
+
+  const normalized = {
+
+    ...request
+
+  };
+
+
+  /*
+    If status is missing, null, undefined,
+    or empty string, force Pending.
+  */
+
+  if(
+    !normalized.status ||
+    String(
+      normalized.status
+    ).trim() === ""
+  ){
+
+    normalized.status =
+      "Pending";
+
+  }
+
+
+  /*
+    Make sure old records still have
+    an array for timeline.
+  */
+
+  if(
+    !Array.isArray(
+      normalized.timeline
+    )
+  ){
+
+    normalized.timeline = [
+
+      {
+
+        status:
+          "Pending",
+
+        date:
+          normalized.createdAt ||
+          new Date().toISOString(),
+
+        note:
+          "Request status was automatically set to Pending."
+
+      }
+
+    ];
+
+  }
+
+
+  return normalized;
+
 }
 
 
 /* =========================================================
-   THEME
+   FIREBASE REALTIME DATABASE LISTENER
    ========================================================= */
 
-function applyTheme(){
-  const theme = localStorage.getItem(THEME_KEY) || "light";
+async function initializeFirestore(){
 
-  document.documentElement.setAttribute(
-    "data-theme",
-    theme
-  );
-}
+  if(firebaseStarting){
+    return;
+  }
 
-function toggleTheme(){
+  firebaseStarting = true;
 
-  const current =
-    document.documentElement.getAttribute("data-theme");
 
-  const next =
-    current === "dark" ? "light" : "dark";
+  try{
 
-  document.documentElement.setAttribute(
-    "data-theme",
-    next
-  );
+    await waitForFirebase();
 
-  localStorage.setItem(
-    THEME_KEY,
-    next
-  );
+
+    if(firestoreUnsubscribe){
+
+      firestoreUnsubscribe();
+
+      firestoreUnsubscribe = null;
+
+    }
+
+
+    const requestsRef =
+      window.firebaseCollection(
+        window.firebaseDB,
+        "requests"
+      );
+
+
+    firestoreUnsubscribe =
+      window.firebaseOnSnapshot(
+
+        requestsRef,
+
+        snapshot=>{
+
+          firestoreRequests =
+            snapshot.docs.map(
+              firebaseDocSnapshot=>{
+
+                const rawData =
+                  firebaseDocSnapshot.data();
+
+
+                /*
+                  Normalize every Firebase document.
+                  This means old records without status
+                  are counted as Pending automatically.
+                */
+
+                const normalized =
+                  normalizeRequest({
+
+                    firestoreId:
+                      firebaseDocSnapshot.id,
+
+                    ...rawData
+
+                  });
+
+
+                return normalized;
+
+              }
+            );
+
+
+          firestoreRequests.sort(
+            (a,b)=>{
+
+              const aTime =
+                new Date(
+                  a.createdAt || 0
+                ).getTime();
+
+              const bTime =
+                new Date(
+                  b.createdAt || 0
+                ).getTime();
+
+              return bTime - aTime;
+
+            }
+          );
+
+
+          firestoreLoaded = true;
+
+
+          const hash =
+            location.hash || "#/home";
+
+
+          if(
+            hash ===
+            "#/admin/dashboard" &&
+            isAdmin()
+          ){
+
+            renderAdminDashboard();
+
+          }
+
+
+          if(
+            hash.startsWith(
+              "#/track?"
+            )
+          ){
+
+            const params =
+              new URLSearchParams(
+                hash.split("?")[1]
+              );
+
+
+            const id =
+              params.get("id") || "";
+
+
+            if(id){
+
+              const request =
+                getRequest(id);
+
+
+              if(request){
+
+                const result =
+                  $("trackResult");
+
+
+                if(result){
+
+                  renderTrackResult(
+                    request
+                  );
+
+                }
+
+              }
+
+            }
+
+          }
+
+
+          if(
+            hash.startsWith(
+              "#/success?"
+            )
+          ){
+
+            const params =
+              new URLSearchParams(
+                hash.split("?")[1]
+              );
+
+
+            const id =
+              params.get("id");
+
+
+            if(id){
+
+              const request =
+                getRequest(id);
+
+
+              if(request){
+
+                renderSuccessFromData(
+                  request
+                );
+
+              }
+
+            }
+
+          }
+
+        },
+
+        error=>{
+
+          console.error(
+            "Firestore realtime listener error:",
+            error
+          );
+
+
+          firestoreLoaded = true;
+
+
+          toast(
+            firebaseErrorMessage(error),
+            "error"
+          );
+
+        }
+
+      );
+
+
+  }catch(error){
+
+    console.error(
+      "Firestore startup error:",
+      error
+    );
+
+
+    firestoreLoaded = true;
+
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }finally{
+
+    firebaseStarting = false;
+
+  }
+
 }
 
 
 /* =========================================================
-   DATABASE / LOCAL STORAGE
+   DATABASE / FIRESTORE
    ========================================================= */
 
 function loadRequests(){
 
-  try{
-
-    const raw = localStorage.getItem(DB_KEY);
-
-    if(!raw){
-      return [];
-    }
-
-    const data = JSON.parse(raw);
-
-    return Array.isArray(data) ? data : [];
-
-  }catch(error){
-
-    console.error(error);
-
-    return [];
-
-  }
-
-}
-
-function saveRequests(requests){
-
-  localStorage.setItem(
-    DB_KEY,
-    JSON.stringify(requests)
+  return firestoreRequests.map(
+    request =>
+      normalizeRequest(
+        request
+      )
   );
 
 }
 
+
+/* =========================================================
+   FIRESTORE SAVE REQUESTS
+   ========================================================= */
+
+async function saveRequests(requests){
+
+  await waitForFirebase();
+
+
+  const incoming =
+    Array.isArray(requests)
+      ? requests
+      : [];
+
+
+  const current =
+    [...firestoreRequests];
+
+
+  const currentById =
+    new Map(
+      current.map(
+        r=>[r.id,r]
+      )
+    );
+
+
+  const incomingIds =
+    new Set(
+      incoming.map(
+        r=>r.id
+      )
+    );
+
+
+  /*
+    Delete records that are no longer
+    included in the incoming array.
+  */
+
+  for(
+    const currentRequest of current
+  ){
+
+    if(
+      currentRequest.firestoreId &&
+      !incomingIds.has(
+        currentRequest.id
+      )
+    ){
+
+      await window.firebaseDeleteDoc(
+
+        window.firebaseDoc(
+          window.firebaseDB,
+          "requests",
+          currentRequest.firestoreId
+        )
+
+      );
+
+    }
+
+  }
+
+
+  /*
+    Add or update incoming records.
+  */
+
+  for(
+    const originalRequest of incoming
+  ){
+
+    /*
+      Normalize before saving.
+      Missing status becomes Pending.
+    */
+
+    const request =
+      normalizeRequest(
+        originalRequest
+      );
+
+
+    const cleanRequest = {
+      ...request
+    };
+
+
+    delete cleanRequest.firestoreId;
+
+
+    const existing =
+      currentById.get(
+        request.id
+      );
+
+
+    if(
+      existing &&
+      existing.firestoreId
+    ){
+
+      await window.firebaseUpdateDoc(
+
+        window.firebaseDoc(
+          window.firebaseDB,
+          "requests",
+          existing.firestoreId
+        ),
+
+        cleanRequest
+
+      );
+
+    }else{
+
+      await window.firebaseAddDoc(
+
+        window.firebaseCollection(
+          window.firebaseDB,
+          "requests"
+        ),
+
+        cleanRequest
+
+      );
+
+    }
+
+  }
+
+
+  /*
+    Realtime listener will update
+    firestoreRequests automatically.
+  */
+
+}
+
+
+/* =========================================================
+   GENERATE REQUEST ID
+   ========================================================= */
+
 function genRequestId(){
 
-  const now = new Date();
+  const now =
+    new Date();
 
-  const year = now.getFullYear();
+
+  const year =
+    now.getFullYear();
+
 
   const random =
-    Math.floor(100000 + Math.random()*900000);
+    Math.floor(
+      100000 +
+      Math.random()*900000
+    );
+
 
   return `BRGY-${year}-${random}`;
 
 }
 
-function addRequest(data){
 
-  const requests = loadRequests();
+/* =========================================================
+   ADD REQUEST
+   ========================================================= */
 
-  const now = new Date().toISOString();
+async function addRequest(data){
+
+  await waitForFirebase();
+
+
+  const now =
+    new Date().toISOString();
+
+
+  /*
+    IMPORTANT:
+    Every NEW request is ALWAYS Pending.
+    
+    Even if data contains status:"Processing",
+    status:"Ready", etc., the final status here
+    is forced to Pending.
+  */
 
   const request = {
 
-    id:genRequestId(),
+    id:
+      genRequestId(),
 
     ...data,
 
-    createdAt:now,
+    createdAt:
+      now,
 
-    updatedAt:now,
+    updatedAt:
+      now,
 
-    status:"Pending",
+    status:
+      "Pending",
 
-    adminNotes:"",
+    adminNotes:
+      "",
 
     timeline:[
       {
-        status:"Pending",
-        date:now,
-        note:"Request submitted successfully."
+        status:
+          "Pending",
+
+        date:
+          now,
+
+        note:
+          "Request submitted successfully."
       }
     ]
 
   };
 
-  requests.unshift(request);
 
-  saveRequests(requests);
+  const cleanRequest =
+    {
+      ...request
+    };
 
-  return request;
+
+  delete cleanRequest.firestoreId;
+
+
+  const docRef =
+    await window.firebaseAddDoc(
+
+      window.firebaseCollection(
+        window.firebaseDB,
+        "requests"
+      ),
+
+      cleanRequest
+
+    );
+
+
+  /*
+    Add immediately to local memory.
+    The realtime listener will also sync it.
+  */
+
+  const localRequest = {
+
+    ...request,
+
+    firestoreId:
+      docRef.id
+
+  };
+
+
+  firestoreRequests =
+    [
+      localRequest,
+      ...firestoreRequests.filter(
+        r=>r.id !== localRequest.id
+      )
+    ];
+
+
+  firestoreRequests.sort(
+    (a,b)=>
+      new Date(
+        b.createdAt
+      ).getTime() -
+      new Date(
+        a.createdAt
+      ).getTime()
+  );
+
+
+  return localRequest;
 
 }
+
+
+/* =========================================================
+   GET REQUEST
+   ========================================================= */
 
 function getRequest(id){
 
-  if(!id) return null;
+  if(!id){
+    return null;
+  }
 
-  return loadRequests().find(
-    r => r.id.toUpperCase() === id.toUpperCase()
-  ) || null;
 
-}
+  const request =
+    firestoreRequests.find(
 
-function updateRequest(id,changes){
+      r =>
+        String(r.id || "")
+          .toUpperCase() ===
+        String(id || "")
+          .toUpperCase()
 
-  const requests = loadRequests();
+    ) || null;
 
-  const index = requests.findIndex(
-    r => r.id === id
+
+  /*
+    Normalize again when retrieving.
+    This protects old records that don't
+    have a status.
+  */
+
+  return normalizeRequest(
+    request
   );
 
-  if(index === -1){
+}
+
+
+/* =========================================================
+   UPDATE REQUEST
+   ========================================================= */
+
+async function updateRequest(id,changes){
+
+  await waitForFirebase();
+
+
+  const request =
+    getRequest(id);
+
+
+  if(!request){
+
     return null;
+
   }
 
-  requests[index] = {
-    ...requests[index],
+
+  if(!request.firestoreId){
+
+    throw new Error(
+      "Firestore document ID not found."
+    );
+
+  }
+
+
+  const updatedChanges = {
+
     ...changes,
-    updatedAt:new Date().toISOString()
+
+    /*
+      If current status is missing,
+      preserve it as Pending.
+    */
+
+    status:
+      changes.status ||
+      request.status ||
+      "Pending",
+
+    updatedAt:
+      new Date().toISOString()
+
   };
 
-  saveRequests(requests);
 
-  return requests[index];
+  const updated = {
 
-}
+    ...updatedChanges
 
-function deleteRequest(id){
+  };
 
-  const requests = loadRequests();
 
-  const filtered =
-    requests.filter(r => r.id !== id);
+  await window.firebaseUpdateDoc(
 
-  saveRequests(filtered);
+    window.firebaseDoc(
+      window.firebaseDB,
+      "requests",
+      request.firestoreId
+    ),
 
-}
+    updated
 
-function updateStatus(id,newStatus,note=""){
+  );
 
-  const requests = loadRequests();
 
   const index =
-    requests.findIndex(r => r.id === id);
+    firestoreRequests.findIndex(
+      r=>r.id === id
+    );
 
-  if(index === -1){
+
+  if(index !== -1){
+
+    firestoreRequests[index] =
+      normalizeRequest({
+
+        ...firestoreRequests[index],
+
+        ...updated
+
+      });
+
+  }
+
+
+  return firestoreRequests[index];
+
+}
+
+
+/* =========================================================
+   DELETE REQUEST
+   ========================================================= */
+
+async function deleteRequest(id){
+
+  await waitForFirebase();
+
+
+  const request =
+    getRequest(id);
+
+
+  if(!request){
+
+    return false;
+
+  }
+
+
+  if(request.firestoreId){
+
+    await window.firebaseDeleteDoc(
+
+      window.firebaseDoc(
+        window.firebaseDB,
+        "requests",
+        request.firestoreId
+      )
+
+    );
+
+  }
+
+
+  firestoreRequests =
+    firestoreRequests.filter(
+      r=>r.id !== id
+    );
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   UPDATE STATUS
+   ========================================================= */
+
+async function updateStatus(
+  id,
+  newStatus,
+  note=""
+){
+
+  const request =
+    getRequest(id);
+
+
+  if(!request){
+
     return null;
+
   }
 
-  const request = requests[index];
 
-  request.status = newStatus;
-  request.updatedAt = new Date().toISOString();
-
-  if(note.trim()){
-    request.adminNotes = note.trim();
-  }
-
-  request.timeline =
-    Array.isArray(request.timeline)
-      ? request.timeline
+  const timeline =
+    Array.isArray(
+      request.timeline
+    )
+      ? [
+          ...request.timeline
+        ]
       : [];
 
-  request.timeline.push({
 
-    status:newStatus,
+  timeline.push({
 
-    date:new Date().toISOString(),
+    status:
+      newStatus,
+
+    date:
+      new Date().toISOString(),
 
     note:
       note.trim() ||
@@ -1541,11 +2495,83 @@ function updateStatus(id,newStatus,note=""){
 
   });
 
-  requests[index] = request;
 
-  saveRequests(requests);
+  const changes = {
 
-  return request;
+    status:
+      newStatus,
+
+    timeline:
+      timeline,
+
+    adminNotes:
+      note.trim() ||
+      request.adminNotes ||
+      "",
+
+    updatedAt:
+      new Date().toISOString()
+
+  };
+
+
+  return await updateRequest(
+    id,
+    changes
+  );
+
+}
+
+
+/* =========================================================
+   WAIT FOR FIRESTORE DATA
+   ========================================================= */
+
+async function waitForFirestoreData(){
+
+  await waitForFirebase();
+
+
+  if(firestoreLoaded){
+
+    return true;
+
+  }
+
+
+  return new Promise((resolve)=>{
+
+    let attempts = 0;
+
+
+    const timer =
+      setInterval(()=>{
+
+        attempts++;
+
+
+        if(firestoreLoaded){
+
+          clearInterval(timer);
+
+          resolve(true);
+
+          return;
+
+        }
+
+
+        if(attempts >= 100){
+
+          clearInterval(timer);
+
+          resolve(false);
+
+        }
+
+      },100);
+
+  });
 
 }
 
@@ -1558,23 +2584,42 @@ function saveRecentTrack(id){
 
   let list = [];
 
+
   try{
-    list = JSON.parse(
-      localStorage.getItem(RECENT_KEY) || "[]"
-    );
+
+    list =
+      JSON.parse(
+        localStorage.getItem(
+          RECENT_KEY
+        ) || "[]"
+      );
+
   }catch{
+
     list = [];
+
   }
 
-  list = list.filter(x => x !== id);
+
+  list =
+    list.filter(
+      x=>x !== id
+    );
+
 
   list.unshift(id);
 
-  list = list.slice(0,8);
+
+  list =
+    list.slice(0,8);
+
 
   localStorage.setItem(
+
     RECENT_KEY,
+
     JSON.stringify(list)
+
   );
 
 }
@@ -1586,7 +2631,8 @@ function saveRecentTrack(id){
 
 function renderHome(){
 
-  const docsHTML = DOCUMENTS.map(doc => `
+  const docsHTML =
+    DOCUMENTS.map(doc => `
 
     <div class="doc-card">
 
@@ -1614,6 +2660,7 @@ function renderHome(){
     </div>
 
   `).join("");
+
 
   $("app").innerHTML = `
 
@@ -1745,18 +2792,31 @@ function renderHome(){
 function startRequest(code){
 
   formState = {
+
     step:2,
+
     docCode:code,
+
     fullName:"",
+
     birthdate:"",
+
     address:"",
+
     contact:"",
+
     email:"",
+
     copies:1,
+
     purpose:"",
+
     notes:"",
+
     urgent:false
+
   };
+
 
   go("#/request");
 
@@ -1769,7 +2829,11 @@ function startRequest(code){
 
 function renderRequest(){
 
-  const selected = docByCode(formState.docCode);
+  const selected =
+    docByCode(
+      formState.docCode
+    );
+
 
   $("app").innerHTML = `
 
@@ -1865,8 +2929,11 @@ function requestStepOne(){
 
 function selectDocument(code){
 
-  formState.docCode = code;
-  formState.step = 2;
+  formState.docCode =
+    code;
+
+  formState.step =
+    2;
 
   renderRequest();
 
@@ -2060,7 +3127,8 @@ function requestStepTwo(selected){
 
 function goBackToDocuments(){
 
-  formState.step = 1;
+  formState.step =
+    1;
 
   renderRequest();
 
@@ -2093,7 +3161,9 @@ function readRequestForm(){
       1,
       Math.min(
         10,
-        Number($("copies").value || 1)
+        Number(
+          $("copies").value || 1
+        )
       )
     );
 
@@ -2113,37 +3183,81 @@ function nextToReview(){
 
   readRequestForm();
 
+
   if(!formState.docCode){
-    toast("Please select a document.","error");
+
+    toast(
+      "Please select a document.",
+      "error"
+    );
+
     return;
+
   }
+
 
   if(!formState.fullName){
-    toast("Please enter your full name.","error");
+
+    toast(
+      "Please enter your full name.",
+      "error"
+    );
+
     return;
+
   }
+
 
   if(!formState.birthdate){
-    toast("Please enter your birthdate.","error");
+
+    toast(
+      "Please enter your birthdate.",
+      "error"
+    );
+
     return;
+
   }
+
 
   if(!formState.address){
-    toast("Please enter your address.","error");
+
+    toast(
+      "Please enter your address.",
+      "error"
+    );
+
     return;
+
   }
+
 
   if(!formState.contact){
-    toast("Please enter your contact number.","error");
+
+    toast(
+      "Please enter your contact number.",
+      "error"
+    );
+
     return;
+
   }
+
 
   if(!formState.purpose){
-    toast("Please enter the purpose.","error");
+
+    toast(
+      "Please enter the purpose.",
+      "error"
+    );
+
     return;
+
   }
 
-  formState.step = 3;
+
+  formState.step =
+    3;
 
   renderRequest();
 
@@ -2157,8 +3271,13 @@ function nextToReview(){
 function requestStepThree(selected){
 
   const total =
-    Number(selected?.price || 0) *
-    Number(formState.copies || 1);
+    Number(
+      selected?.price || 0
+    ) *
+    Number(
+      formState.copies || 1
+    );
+
 
   return `
 
@@ -2175,27 +3294,57 @@ function requestStepThree(selected){
 
         <div class="form-grid">
 
-          ${reviewItem("Document",selected?.name)}
+          ${reviewItem(
+            "Document",
+            selected?.name
+          )}
 
-          ${reviewItem("Estimated Fee",peso(total))}
+          ${reviewItem(
+            "Estimated Fee",
+            peso(total)
+          )}
 
-          ${reviewItem("Full Name",formState.fullName)}
+          ${reviewItem(
+            "Full Name",
+            formState.fullName
+          )}
 
-          ${reviewItem("Birthdate",formState.birthdate)}
+          ${reviewItem(
+            "Birthdate",
+            formState.birthdate
+          )}
 
-          ${reviewItem("Contact",formState.contact)}
+          ${reviewItem(
+            "Contact",
+            formState.contact
+          )}
 
-          ${reviewItem("Email",formState.email || "Not provided")}
+          ${reviewItem(
+            "Email",
+            formState.email ||
+            "Not provided"
+          )}
 
-          ${reviewItem("Address",formState.address)}
+          ${reviewItem(
+            "Address",
+            formState.address
+          )}
 
-          ${reviewItem("Copies",formState.copies)}
+          ${reviewItem(
+            "Copies",
+            formState.copies
+          )}
 
-          ${reviewItem("Purpose",formState.purpose)}
+          ${reviewItem(
+            "Purpose",
+            formState.purpose
+          )}
 
           ${reviewItem(
             "Urgent",
-            formState.urgent ? "Yes" : "No"
+            formState.urgent
+              ? "Yes"
+              : "No"
           )}
 
           <div class="form-group full">
@@ -2203,7 +3352,10 @@ function requestStepThree(selected){
             <label>Notes</label>
 
             <div class="url-box">
-              ${esc(formState.notes || "None")}
+              ${esc(
+                formState.notes ||
+                "None"
+              )}
             </div>
 
           </div>
@@ -2252,7 +3404,9 @@ function reviewItem(label,value){
 
     <div class="form-group">
 
-      <label>${esc(label)}</label>
+      <label>
+        ${esc(label)}
+      </label>
 
       <div class="url-box">
         ${esc(value)}
@@ -2267,7 +3421,8 @@ function reviewItem(label,value){
 
 function editRequestForm(){
 
-  formState.step = 2;
+  formState.step =
+    2;
 
   renderRequest();
 
@@ -2278,52 +3433,112 @@ function editRequestForm(){
    SUBMIT REQUEST
    ========================================================= */
 
-function submitRequest(){
+async function submitRequest(){
 
-  const selected = docByCode(formState.docCode);
+  const selected =
+    docByCode(
+      formState.docCode
+    );
+
 
   if(!selected){
-    toast("Invalid document.","error");
+
+    toast(
+      "Invalid document.",
+      "error"
+    );
+
     return;
+
   }
 
+
   const total =
-    Number(selected.price || 0) *
-    Number(formState.copies || 1);
+    Number(
+      selected.price || 0
+    ) *
+    Number(
+      formState.copies || 1
+    );
 
-  const request = addRequest({
 
-    documentCode:selected.code,
+  try{
 
-    documentName:selected.name,
+    toast(
+      "Submitting request...",
+      "info"
+    );
 
-    documentPrice:selected.price,
 
-    fullName:formState.fullName,
+    const request =
+      await addRequest({
 
-    birthdate:formState.birthdate,
+        documentCode:
+          selected.code,
 
-    address:formState.address,
+        documentName:
+          selected.name,
 
-    contact:formState.contact,
+        documentPrice:
+          selected.price,
 
-    email:formState.email,
+        fullName:
+          formState.fullName,
 
-    copies:formState.copies,
+        birthdate:
+          formState.birthdate,
 
-    purpose:formState.purpose,
+        address:
+          formState.address,
 
-    notes:formState.notes,
+        contact:
+          formState.contact,
 
-    urgent:formState.urgent,
+        email:
+          formState.email,
 
-    totalFee:total
+        copies:
+          formState.copies,
 
-  });
+        purpose:
+          formState.purpose,
 
-  saveRecentTrack(request.id);
+        notes:
+          formState.notes,
 
-  go("#/success?id=" + encodeURIComponent(request.id));
+        urgent:
+          formState.urgent,
+
+        totalFee:
+          total
+
+      });
+
+
+    saveRecentTrack(
+      request.id
+    );
+
+
+    go(
+      "#/success?id=" +
+      encodeURIComponent(
+        request.id
+      )
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }
 
 }
 
@@ -2334,41 +3549,89 @@ function submitRequest(){
 
 function renderSuccess(id){
 
-  const request = getRequest(id);
+  const request =
+    getRequest(id);
+
 
   if(!request){
 
     $("app").innerHTML = `
 
       <div class="card">
+
         <div class="card-body empty">
-          <div class="empty-icon">❌</div>
-          <h2>Request Not Found</h2>
-          <p>The request could not be found.</p>
+
+          <div class="empty-icon">
+            ❌
+          </div>
+
+          <h2>
+            Request Not Found
+          </h2>
+
+          <p>
+            The request could not be found.
+          </p>
+
         </div>
+
       </div>
 
     `;
 
     return;
+
   }
 
+
+  renderSuccessFromData(
+    request
+  );
+
+}
+
+
+function renderSuccessFromData(request){
+
+  if(!request){
+
+    return;
+
+  }
+
+
   const trackUrl =
-    buildAppUrl("#/track?id=" + encodeURIComponent(request.id));
+    buildAppUrl(
+      "#/track?id=" +
+      encodeURIComponent(
+        request.id
+      )
+    );
+
 
   $("app").innerHTML = `
 
     <div class="card">
 
-      <div class="card-body" style="text-align:center">
+      <div
+        class="card-body"
+        style="text-align:center"
+      >
 
         <div style="font-size:60px">
           ✅
         </div>
 
-        <h1>Request Submitted!</h1>
+        <h1>
+          Request Submitted!
+        </h1>
 
-        <p style="color:var(--muted);margin:8px 0 25px">
+        <p
+          style="
+            color:var(--muted);
+            margin:8px 0 25px
+          "
+        >
           Your document request has been successfully submitted.
         </p>
 
@@ -2383,13 +3646,25 @@ function renderSuccess(id){
           "
         >
 
-          <small>YOUR REQUEST ID</small>
+          <small>
+            YOUR REQUEST ID
+          </small>
 
-          <h2 style="color:var(--primary);margin:8px">
+          <h2
+            style="
+              color:var(--primary);
+              margin:8px
+            "
+          >
             ${esc(request.id)}
           </h2>
 
-          <p style="font-size:12px;color:var(--muted)">
+          <p
+            style="
+              font-size:12px;
+              color:var(--muted)
+            "
+          >
             Keep this Request ID for tracking.
           </p>
 
@@ -2404,7 +3679,10 @@ function renderSuccess(id){
 
         <div
           class="url-box"
-          style="max-width:600px;margin:auto"
+          style="
+            max-width:600px;
+            margin:auto
+          "
         >
           ${esc(trackUrl)}
         </div>
@@ -2456,6 +3734,7 @@ function renderSuccess(id){
 
   `;
 
+
   setTimeout(()=>{
 
     generateQR(
@@ -2479,9 +3758,14 @@ function renderTrack(id=""){
 
     <div class="track-box">
 
-      <div class="section-title" style="text-align:center">
+      <div
+        class="section-title"
+        style="text-align:center"
+      >
 
-        <h2>Track Request</h2>
+        <h2>
+          Track Request
+        </h2>
 
         <p>
           Enter your Request ID.
@@ -2496,7 +3780,9 @@ function renderTrack(id=""){
 
           <div class="form-group">
 
-            <label>Request ID</label>
+            <label>
+              Request ID
+            </label>
 
             <input
               id="trackId"
@@ -2526,60 +3812,102 @@ function renderTrack(id=""){
 
   `;
 
+
   if(id){
-    setTimeout(trackRequest,50);
+
+    setTimeout(
+      trackRequest,
+      100
+    );
+
   }
 
 }
 
 
-function trackRequest(){
+async function trackRequest(){
 
   const id =
     $("trackId").value.trim();
 
+
   if(!id){
 
-    toast("Enter your Request ID.","error");
+    toast(
+      "Enter your Request ID.",
+      "error"
+    );
 
     return;
+
   }
+
+
+  await waitForFirestoreData();
+
 
   const request =
     getRequest(id);
+
 
   if(!request){
 
     $("trackResult").innerHTML = `
 
       <div class="card">
+
         <div class="card-body empty">
-          <div class="empty-icon">🔍</div>
-          <h3>Request Not Found</h3>
+
+          <div class="empty-icon">
+            🔍
+          </div>
+
+          <h3>
+            Request Not Found
+          </h3>
+
           <p>
             Please check your Request ID.
           </p>
+
         </div>
+
       </div>
 
     `;
 
     return;
+
   }
 
-  saveRecentTrack(request.id);
 
-  renderTrackResult(request);
+  saveRecentTrack(
+    request.id
+  );
+
+
+  renderTrackResult(
+    request
+  );
 
 }
 
 
 function renderTrackResult(request){
 
+  request =
+    normalizeRequest(
+      request
+    );
+
+
   const timeline =
-    Array.isArray(request.timeline)
+    Array.isArray(
+      request.timeline
+    )
       ? request.timeline
       : [];
+
 
   $("trackResult").innerHTML = `
 
@@ -2598,11 +3926,15 @@ function renderTrackResult(request){
 
           <div>
 
-            <small style="color:var(--muted)">
+            <small
+              style="color:var(--muted)"
+            >
               Request ID
             </small>
 
-            <h2>${esc(request.id)}</h2>
+            <h2>
+              ${esc(request.id)}
+            </h2>
 
           </div>
 
@@ -2624,17 +3956,35 @@ function renderTrackResult(request){
 
         <div class="form-grid">
 
-          ${reviewItem("Document",request.documentName)}
+          ${reviewItem(
+            "Document",
+            request.documentName
+          )}
 
-          ${reviewItem("Applicant",request.fullName)}
+          ${reviewItem(
+            "Applicant",
+            request.fullName
+          )}
 
-          ${reviewItem("Purpose",request.purpose)}
+          ${reviewItem(
+            "Purpose",
+            request.purpose
+          )}
 
-          ${reviewItem("Submitted",fmtDate(request.createdAt))}
+          ${reviewItem(
+            "Submitted",
+            fmtDate(request.createdAt)
+          )}
 
-          ${reviewItem("Last Updated",fmtDate(request.updatedAt))}
+          ${reviewItem(
+            "Last Updated",
+            fmtDate(request.updatedAt)
+          )}
 
-          ${reviewItem("Fee",peso(request.totalFee))}
+          ${reviewItem(
+            "Fee",
+            peso(request.totalFee)
+          )}
 
         </div>
 
@@ -2648,24 +3998,30 @@ function renderTrackResult(request){
 
           ${
             timeline.length
-              ? timeline.map((item,index)=>`
+              ? timeline.map(
+                  (item,index)=>`
 
                 <div
                   class="timeline-item ${
-                    index === timeline.length-1
+                    index ===
+                    timeline.length-1
                       ? "active"
                       : ""
                   }"
                 >
 
-                  <div class="timeline-dot"></div>
+                  <div
+                    class="timeline-dot"
+                  ></div>
 
                   <h4>
                     ${esc(item.status)}
                   </h4>
 
                   <p>
-                    ${esc(item.note || "")}
+                    ${esc(
+                      item.note || ""
+                    )}
                   </p>
 
                   <p>
@@ -2674,7 +4030,8 @@ function renderTrackResult(request){
 
                 </div>
 
-              `).join("")
+              `
+                ).join("")
               : `
                 <p style="color:var(--muted)">
                   No timeline available.
@@ -2689,15 +4046,26 @@ function renderTrackResult(request){
           request.adminNotes
             ? `
               <div class="notice">
-                <strong>Admin Note:</strong><br>
-                ${esc(request.adminNotes)}
+
+                <strong>
+                  Admin Note:
+                </strong>
+
+                <br>
+
+                ${esc(
+                  request.adminNotes
+                )}
+
               </div>
             `
             : ""
         }
 
 
-        <div style="margin-top:15px">
+        <div
+          style="margin-top:15px"
+        >
 
           <button
             class="btn btn-secondary"
@@ -2723,10 +4091,23 @@ function renderTrackResult(request){
 
 function statusBadge(status){
 
+  /*
+    Missing status is always Pending.
+  */
+
+  const normalizedStatus =
+    status ||
+    "Pending";
+
+
   return `
-    <span class="status status-${esc(status)}">
-      ${esc(status)}
+
+    <span
+      class="status status-${esc(normalizedStatus)}"
+    >
+      ${esc(normalizedStatus)}
     </span>
+
   `;
 
 }
@@ -2739,13 +4120,16 @@ function statusBadge(status){
 function renderQR(){
 
   const current =
-    buildAppUrl("#/request");
+    "https://cyrusvalenzuela28.github.io/barangay-E-request/";
+
 
   $("app").innerHTML = `
 
     <div class="section-title">
 
-      <h2>Resident QR Code</h2>
+      <h2>
+        Resident QR Code
+      </h2>
 
       <p>
         I-scan ng resident ang QR para direktang pumunta
@@ -2761,7 +4145,9 @@ function renderQR(){
 
         <div class="card-body">
 
-          <h3>Generate QR Code</h3>
+          <h3>
+            Generate QR Code
+          </h3>
 
           <p
             style="
@@ -2770,29 +4156,36 @@ function renderQR(){
               margin:5px 0 15px;
             "
           >
-            Ilagay ang accessible website URL ng system.
+            Official GitHub Pages URL ng Barangay e-Request System.
           </p>
 
 
-          <div class="notice warning">
+          <div class="notice">
 
-            <strong>Important:</strong>
-            Kung <b>file://</b> o <b>localhost</b> ang URL,
-            hindi iyon maa-access ng ibang cellphone.
-            Kailangan ng LAN IP o online hosting para ma-scan
-            mula sa ibang device.
+            <strong>
+              QR Destination:
+            </strong>
+
+            GitHub Pages
+
+            <br>
+
+            Kapag na-scan ang QR,
+            automatic na bubukas ang Resident Request page.
 
           </div>
 
 
           <div class="form-group">
 
-            <label>Resident Portal URL</label>
+            <label>
+              Resident Portal URL
+            </label>
 
             <input
               id="qrUrl"
               value="${esc(current)}"
-              placeholder="https://your-site.com/"
+              placeholder="https://cyrusvalenzuela28.github.io/barangay-E-request/"
             >
 
           </div>
@@ -2839,7 +4232,9 @@ function renderQR(){
 
         <div class="card-body qr-box">
 
-          <h3>Scan to Request</h3>
+          <h3>
+            Scan to Request
+          </h3>
 
           <div
             id="residentQR"
@@ -2850,7 +4245,10 @@ function renderQR(){
             id="qrDisplayUrl"
             class="url-box"
           >
-            ${esc(current)}
+            ${esc(
+              current +
+              "#/request"
+            )}
           </div>
 
         </div>
@@ -2860,11 +4258,16 @@ function renderQR(){
     </div>
 
 
-    <div class="card" style="margin-top:20px">
+    <div
+      class="card"
+      style="margin-top:20px"
+    >
 
       <div class="card-body">
 
-        <h3>How to Use</h3>
+        <h3>
+          How to Use
+        </h3>
 
         <ol
           style="
@@ -2875,19 +4278,19 @@ function renderQR(){
         >
 
           <li>
-            Ilagay ang actual accessible URL.
+            I-scan ang QR Code gamit ang cellphone.
           </li>
 
           <li>
-            Click <b>Generate QR</b>.
+            Automatic na bubukas ang GitHub Pages website.
           </li>
 
           <li>
-            I-scan gamit ang cellphone.
+            Diretso sa Resident Request page.
           </li>
 
           <li>
-            Direct na bubukas ang Resident Request page.
+            Fill up ang document request form.
           </li>
 
         </ol>
@@ -2898,8 +4301,11 @@ function renderQR(){
 
   `;
 
+
   setTimeout(()=>{
+
     generateResidentQR();
+
   },100);
 
 }
@@ -2912,6 +4318,7 @@ function buildAppUrl(hash){
       .split("#")[0]
       .split("?")[0];
 
+
   return base + hash;
 
 }
@@ -2919,18 +4326,28 @@ function buildAppUrl(hash){
 
 function normalizeBaseUrl(value){
 
-  let url = value.trim();
+  let url =
+    value.trim();
+
 
   if(!url){
+
     return "";
+
   }
+
 
   if(
     !/^https?:\/\//i.test(url) &&
     !/^file:/i.test(url)
   ){
-    url = "https://" + url;
+
+    url =
+      "https://" +
+      url;
+
   }
+
 
   return url
     .split("#")[0]
@@ -2944,56 +4361,85 @@ function makeRequestUrl(base){
   const clean =
     normalizeBaseUrl(base);
 
+
   if(!clean){
+
     return "";
+
   }
 
-  return clean + "#/request";
+
+  return clean +
+    "#/request";
 
 }
 
 
-function generateQR(elementId,text,size=250){
+function generateQR(
+  elementId,
+  text,
+  size=250
+){
 
   const container =
     $(elementId);
 
+
   if(!container){
+
     return;
+
   }
 
-  container.innerHTML = "";
+
+  container.innerHTML =
+    "";
+
 
   if(!text){
+
     return;
+
   }
 
-  if(typeof QRCode === "undefined"){
+
+  if(
+    typeof QRCode ===
+    "undefined"
+  ){
 
     container.innerHTML = `
+
       <p style="color:var(--danger)">
         QR library failed to load.
       </p>
+
     `;
 
     return;
+
   }
 
-  new QRCode(container,{
 
-    text:text,
+  new QRCode(
+    container,
+    {
 
-    width:size,
+      text:text,
 
-    height:size,
+      width:size,
 
-    colorDark:"#111111",
+      height:size,
 
-    colorLight:"#ffffff",
+      colorDark:"#111111",
 
-    correctLevel:QRCode.CorrectLevel.H
+      colorLight:"#ffffff",
 
-  });
+      correctLevel:
+        QRCode.CorrectLevel.H
+
+    }
+  );
 
 }
 
@@ -3003,20 +4449,36 @@ function generateResidentQR(){
   const input =
     $("qrUrl").value.trim();
 
+
   const finalUrl =
-    makeRequestUrl(input);
+    makeRequestUrl(
+      input
+    );
+
 
   if(!finalUrl){
 
-    toast("Please enter a URL.","error");
+    toast(
+      "Please enter a URL.",
+      "error"
+    );
 
     return;
+
   }
 
-  $("qrUrl").value = finalUrl;
+
+  $("qrUrl").value =
+    input
+      .split("#")[0]
+      .split("?")[0]
+      .replace(/\/+$/,"") +
+    "/";
+
 
   $("qrDisplayUrl").textContent =
     finalUrl;
+
 
   generateQR(
     "residentQR",
@@ -3024,25 +4486,11 @@ function generateResidentQR(){
     250
   );
 
-  if(
-    finalUrl.startsWith("file:") ||
-    finalUrl.includes("localhost") ||
-    finalUrl.includes("127.0.0.1")
-  ){
 
-    toast(
-      "QR generated, pero hindi accessible sa ibang device ang local URL.",
-      "info"
-    );
-
-  }else{
-
-    toast(
-      "QR Code generated successfully.",
-      "success"
-    );
-
-  }
+  toast(
+    "QR Code generated successfully.",
+    "success"
+  );
 
 }
 
@@ -3052,18 +4500,32 @@ function printQR(){
   const qr =
     $("residentQR");
 
-  if(!qr || !qr.innerHTML){
 
-    toast("Generate the QR code first.","error");
+  if(
+    !qr ||
+    !qr.innerHTML
+  ){
+
+    toast(
+      "Generate the QR code first.",
+      "error"
+    );
 
     return;
+
   }
+
 
   const url =
     $("qrUrl").value;
 
+
   const win =
-    window.open("","_blank");
+    window.open(
+      "",
+      "_blank"
+    );
+
 
   win.document.write(`
 
@@ -3073,7 +4535,9 @@ function printQR(){
 
     <head>
 
-      <title>Barangay Resident QR Code</title>
+      <title>
+        Barangay Resident QR Code
+      </title>
 
       <style>
 
@@ -3100,22 +4564,32 @@ function printQR(){
 
     <body>
 
-      <h1>Barangay</h1>
+      <h1>
+        Barangay
+      </h1>
 
-      <h2>Resident Document Request</h2>
+      <h2>
+        Resident Document Request
+      </h2>
 
       ${qr.innerHTML}
 
-      <p>Scan this QR Code to request a document.</p>
+      <p>
+        Scan this QR Code to request a document.
+      </p>
 
       <div class="url">
         ${esc(url)}
       </div>
 
       <script>
+
         window.onload=function(){
+
           window.print();
+
         }
+
       <\/script>
 
     </body>
@@ -3123,6 +4597,7 @@ function printQR(){
     </html>
 
   `);
+
 
   win.document.close();
 
@@ -3141,13 +4616,16 @@ function isAdmin(){
 
 }
 
+
 function adminLogin(){
 
   const user =
     $("adminUser").value.trim();
 
+
   const pass =
     $("adminPass").value;
+
 
   if(
     user === ADMIN_USER &&
@@ -3159,13 +4637,19 @@ function adminLogin(){
       "true"
     );
 
+
     toast(
       "Admin login successful.",
       "success"
     );
 
+
     setTimeout(()=>{
-      go("#/admin/dashboard");
+
+      go(
+        "#/admin/dashboard"
+      );
+
     },300);
 
   }else{
@@ -3179,19 +4663,24 @@ function adminLogin(){
 
 }
 
+
 function adminLogout(){
 
   sessionStorage.removeItem(
     ADMIN_SESSION
   );
 
+
   toast(
     "Admin logged out.",
     "info"
   );
 
+
   setTimeout(()=>{
+
     go("#/admin");
+
   },300);
 
 }
@@ -3205,10 +4694,14 @@ function renderAdminLogin(){
 
   if(isAdmin()){
 
-    go("#/admin/dashboard");
+    go(
+      "#/admin/dashboard"
+    );
 
     return;
+
   }
+
 
   $("app").innerHTML = `
 
@@ -3222,7 +4715,9 @@ function renderAdminLogin(){
             B
           </div>
 
-          <h2 style="margin-top:12px">
+          <h2
+            style="margin-top:12px"
+          >
             Admin Portal
           </h2>
 
@@ -3245,7 +4740,9 @@ function renderAdminLogin(){
 
         <div class="form-group">
 
-          <label>Username</label>
+          <label>
+            Username
+          </label>
 
           <input
             id="adminUser"
@@ -3261,7 +4758,9 @@ function renderAdminLogin(){
           style="margin-top:13px"
         >
 
-          <label>Password</label>
+          <label>
+            Password
+          </label>
 
           <input
             id="adminPass"
@@ -3291,7 +4790,8 @@ function renderAdminLogin(){
           "
         >
           Prototype credentials:<br>
-          <b>admin</b> / <b>barangay123</b>
+          <b>admin</b> /
+          <b>barangay123</b>
         </div>
 
       </div>
@@ -3307,33 +4807,95 @@ function renderAdminLogin(){
    ADMIN DASHBOARD
    ========================================================= */
 
-function renderAdminDashboard(){
+async function renderAdminDashboard(){
 
   if(!isAdmin()){
 
     go("#/admin");
 
     return;
+
   }
 
+  /*
+    IMPORTANT:
+    Wait for the first Firestore snapshot before
+    rendering the dashboard. This prevents the
+    admin from seeing "No requests found" while
+    Firebase is still loading requests submitted
+    from a resident's phone.
+  */
+
+  try{
+
+    await waitForFirestoreData();
+
+  }catch(error){
+
+    console.error("Unable to load Firestore data:", error);
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }
+
+  /*
+    Make sure all loaded requests are normalized
+    before computing dashboard statistics.
+  */
+
   const requests =
-    loadRequests();
+    loadRequests().map(
+      normalizeRequest
+    );
+
 
   const stats = {
 
-    total:requests.length,
+    total:
+      requests.length,
 
     pending:
-      requests.filter(r=>r.status==="Pending").length,
+      requests.filter(
+        r =>
+          (
+            r.status ||
+            "Pending"
+          ) ===
+          "Pending"
+      ).length,
 
     processing:
-      requests.filter(r=>r.status==="Processing").length,
+      requests.filter(
+        r =>
+          (
+            r.status ||
+            "Pending"
+          ) ===
+          "Processing"
+      ).length,
 
     ready:
-      requests.filter(r=>r.status==="Ready").length,
+      requests.filter(
+        r =>
+          (
+            r.status ||
+            "Pending"
+          ) ===
+          "Ready"
+      ).length,
 
     completed:
-      requests.filter(r=>r.status==="Completed").length
+      requests.filter(
+        r =>
+          (
+            r.status ||
+            "Pending"
+          ) ===
+          "Completed"
+      ).length
 
   };
 
@@ -3353,13 +4915,27 @@ function renderAdminDashboard(){
 
       <div>
 
-        <h2>Admin Dashboard</h2>
+        <h2>
+          Admin Dashboard
+        </h2>
 
-        <p style="color:var(--muted);font-size:13px">
+        <p
+          style="
+            color:var(--muted);
+            font-size:13px
+          "
+        >
           Manage Barangay document requests.
+          <span
+            id="adminRealtimeStatus"
+            style="margin-left:6px;color:var(--success);font-weight:700;"
+          >
+            ● Live
+          </span>
         </p>
 
       </div>
+
 
       <button
         class="btn btn-danger"
@@ -3373,15 +4949,30 @@ function renderAdminDashboard(){
 
     <div class="stats-grid">
 
-      ${statCard("Total",stats.total)}
+      ${statCard(
+        "Total",
+        stats.total
+      )}
 
-      ${statCard("Pending",stats.pending)}
+      ${statCard(
+        "Pending",
+        stats.pending
+      )}
 
-      ${statCard("Processing",stats.processing)}
+      ${statCard(
+        "Processing",
+        stats.processing
+      )}
 
-      ${statCard("Ready",stats.ready)}
+      ${statCard(
+        "Ready",
+        stats.ready
+      )}
 
-      ${statCard("Completed",stats.completed)}
+      ${statCard(
+        "Completed",
+        stats.completed
+      )}
 
     </div>
 
@@ -3400,10 +4991,13 @@ function renderAdminDashboard(){
             <input
               id="adminSearch"
               placeholder="Search name, ID, document..."
-              value="${esc(adminFilter.search)}"
+              value="${esc(
+                adminFilter.search
+              )}"
               oninput="adminFilter.search=this.value;renderAdminTable()"
               style="min-width:220px"
             >
+
 
             <select
               onchange="adminFilter.status=this.value;renderAdminTable()"
@@ -3417,7 +5011,8 @@ function renderAdminDashboard(){
                 <option
                   value="${esc(status)}"
                   ${
-                    adminFilter.status === status
+                    adminFilter.status ===
+                    status
                       ? "selected"
                       : ""
                   }
@@ -3436,14 +5031,24 @@ function renderAdminDashboard(){
 
               <option
                 value="newest"
-                ${adminFilter.sort==="newest"?"selected":""}
+                ${
+                  adminFilter.sort ===
+                  "newest"
+                    ? "selected"
+                    : ""
+                }
               >
                 Newest
               </option>
 
               <option
                 value="oldest"
-                ${adminFilter.sort==="oldest"?"selected":""}
+                ${
+                  adminFilter.sort ===
+                  "oldest"
+                    ? "selected"
+                    : ""
+                }
               >
                 Oldest
               </option>
@@ -3462,12 +5067,14 @@ function renderAdminDashboard(){
               CSV
             </button>
 
+
             <button
               class="btn btn-secondary btn-sm"
               onclick="backupJSON()"
             >
               Backup
             </button>
+
 
             <button
               class="btn btn-secondary btn-sm"
@@ -3476,6 +5083,7 @@ function renderAdminDashboard(){
               Import
             </button>
 
+
             <input
               type="file"
               id="importFile"
@@ -3483,6 +5091,7 @@ function renderAdminDashboard(){
               style="display:none"
               onchange="importJSON(event)"
             >
+
 
             <button
               class="btn btn-danger btn-sm"
@@ -3503,6 +5112,7 @@ function renderAdminDashboard(){
     </div>
 
   `;
+
 
   renderAdminTable();
 
@@ -3531,7 +5141,7 @@ function statCard(label,value){
 
 
 /* =========================================================
-   ADMIN TABLE
+   ADMIN TABLE / MOBILE CARDS
    ========================================================= */
 
 function renderAdminTable(){
@@ -3539,64 +5149,102 @@ function renderAdminTable(){
   const container =
     $("adminTable");
 
+
   if(!container){
+
     return;
+
   }
 
+
   let requests =
-    loadRequests();
+    loadRequests().map(
+      normalizeRequest
+    );
+
 
   const search =
     adminFilter.search
       .trim()
       .toLowerCase();
 
+
   if(search){
 
     requests =
-      requests.filter(r => {
-
-        return [
-
-          r.id,
-          r.fullName,
-          r.documentName,
-          r.contact,
-          r.address,
-          r.purpose,
-          r.status
-
-        ]
-        .join(" ")
-        .toLowerCase()
-        .includes(search);
-
-      });
-
-  }
-
-  if(adminFilter.status !== "All"){
-
-    requests =
       requests.filter(
-        r => r.status === adminFilter.status
+        r=>{
+
+          return [
+
+            r.id,
+
+            r.fullName,
+
+            r.documentName,
+
+            r.contact,
+
+            r.address,
+
+            r.purpose,
+
+            r.status ||
+              "Pending"
+
+          ]
+          .join(" ")
+          .toLowerCase()
+          .includes(search);
+
+        }
       );
 
   }
 
-  requests.sort((a,b)=>{
 
-    const aTime =
-      new Date(a.createdAt).getTime();
+  if(
+    adminFilter.status !==
+    "All"
+  ){
 
-    const bTime =
-      new Date(b.createdAt).getTime();
+    requests =
+      requests.filter(
+        r =>
+          (
+            r.status ||
+            "Pending"
+          ) ===
+          adminFilter.status
+      );
 
-    return adminFilter.sort === "newest"
-      ? bTime-aTime
-      : aTime-bTime;
+  }
 
-  });
+
+  requests.sort(
+    (a,b)=>{
+
+      const aTime =
+        new Date(
+          a.createdAt || 0
+        ).getTime();
+
+
+      const bTime =
+        new Date(
+          b.createdAt || 0
+        ).getTime();
+
+
+      return adminFilter.sort ===
+        "newest"
+
+        ? bTime-aTime
+
+        : aTime-bTime;
+
+    }
+  );
 
 
   if(!requests.length){
@@ -3609,7 +5257,9 @@ function renderAdminTable(){
           📭
         </div>
 
-        <h3>No requests found</h3>
+        <h3>
+          No requests found
+        </h3>
 
         <p>
           No matching document requests.
@@ -3620,10 +5270,15 @@ function renderAdminTable(){
     `;
 
     return;
+
   }
 
 
-  container.innerHTML = `
+  /*
+    DESKTOP TABLE
+  */
+
+  const desktopTable = `
 
     <div class="table-wrap">
 
@@ -3633,46 +5288,85 @@ function renderAdminTable(){
 
           <tr>
 
-            <th>Request ID</th>
-            <th>Applicant</th>
-            <th>Document</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>
+              Request ID
+            </th>
+
+            <th>
+              Applicant
+            </th>
+
+            <th>
+              Document
+            </th>
+
+            <th>
+              Date
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Action
+            </th>
 
           </tr>
 
         </thead>
 
+
         <tbody>
 
-          ${requests.map(r=>`
+          ${requests.map(
+            r=>`
 
             <tr>
 
               <td>
-                <strong>${esc(r.id)}</strong>
+                <strong>
+                  ${esc(r.id)}
+                </strong>
               </td>
 
+
               <td>
+
                 ${esc(r.fullName)}
+
                 <br>
-                <small style="color:var(--muted)">
+
+                <small
+                  style="
+                    color:var(--muted)
+                  "
+                >
                   ${esc(r.contact)}
                 </small>
+
               </td>
+
 
               <td>
                 ${esc(r.documentName)}
               </td>
 
-              <td>
-                ${fmtDate(r.createdAt)}
-              </td>
 
               <td>
-                ${statusBadge(r.status)}
+                ${fmtDate(
+                  r.createdAt
+                )}
               </td>
+
+
+              <td>
+                ${statusBadge(
+                  r.status ||
+                  "Pending"
+                )}
+              </td>
+
 
               <td>
 
@@ -3687,7 +5381,8 @@ function renderAdminTable(){
 
             </tr>
 
-          `).join("")}
+          `
+          ).join("")}
 
         </tbody>
 
@@ -3696,6 +5391,149 @@ function renderAdminTable(){
     </div>
 
   `;
+
+
+  /*
+    MOBILE CARDS
+  */
+
+  const mobileCards = `
+
+    <div class="admin-mobile-list">
+
+      ${requests.map(
+        r=>{
+
+          const normalizedStatus =
+            r.status ||
+            "Pending";
+
+
+          return `
+
+            <div class="admin-request-card">
+
+              <div class="admin-request-top">
+
+                <div>
+
+                  <div class="admin-request-id">
+                    ${esc(r.id)}
+                  </div>
+
+                  <div class="admin-request-date">
+                    ${fmtDate(
+                      r.createdAt
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="mobile-status">
+
+                  ${statusBadge(
+                    normalizedStatus
+                  )}
+
+                </div>
+
+              </div>
+
+
+              <div class="admin-request-info">
+
+                <div class="admin-info-item">
+
+                  <div class="admin-info-label">
+                    Applicant
+                  </div>
+
+                  <div class="admin-info-value">
+                    ${esc(
+                      r.fullName ||
+                      "—"
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="admin-info-item">
+
+                  <div class="admin-info-label">
+                    Document
+                  </div>
+
+                  <div class="admin-info-value">
+                    ${esc(
+                      r.documentName ||
+                      "—"
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="admin-info-item">
+
+                  <div class="admin-info-label">
+                    Contact
+                  </div>
+
+                  <div class="admin-info-value">
+                    ${esc(
+                      r.contact ||
+                      "—"
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="admin-info-item">
+
+                  <div class="admin-info-label">
+                    Fee
+                  </div>
+
+                  <div class="admin-info-value">
+                    ${peso(
+                      r.totalFee
+                    )}
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="admin-request-action">
+
+                <button
+                  class="btn btn-primary"
+                  onclick="openAdminRequest('${r.id}')"
+                >
+                  👁️ View Request
+                </button>
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      ).join("")}
+
+    </div>
+
+  `;
+
+
+  container.innerHTML =
+    desktopTable +
+    mobileCards;
 
 }
 
@@ -3707,21 +5545,38 @@ function renderAdminTable(){
 function openAdminRequest(id){
 
   const request =
-    getRequest(id);
+    normalizeRequest(
+      getRequest(id)
+    );
+
 
   if(!request){
-    toast("Request not found.","error");
+
+    toast(
+      "Request not found.",
+      "error"
+    );
+
     return;
+
   }
+
+
+  const currentStatus =
+    request.status ||
+    "Pending";
+
 
   const nextOptions =
     ALL_STATUSES
-      .map(status=>`
+      .map(
+        status=>`
 
         <option
           value="${esc(status)}"
           ${
-            status === request.status
+            status ===
+            currentStatus
               ? "selected"
               : ""
           }
@@ -3729,7 +5584,8 @@ function openAdminRequest(id){
           ${esc(status)}
         </option>
 
-      `)
+      `
+      )
       .join("");
 
 
@@ -3739,37 +5595,69 @@ function openAdminRequest(id){
 
       <div class="notice">
 
-        <strong>${esc(request.id)}</strong>
+        <strong>
+          ${esc(request.id)}
+        </strong>
 
         <br>
 
         Current status:
-        ${statusBadge(request.status)}
+        ${statusBadge(
+          currentStatus
+        )}
 
       </div>
 
 
       <div class="form-grid">
 
-        ${reviewItem("Applicant",request.fullName)}
+        ${reviewItem(
+          "Applicant",
+          request.fullName
+        )}
 
-        ${reviewItem("Document",request.documentName)}
+        ${reviewItem(
+          "Document",
+          request.documentName
+        )}
 
-        ${reviewItem("Birthdate",request.birthdate)}
+        ${reviewItem(
+          "Birthdate",
+          request.birthdate
+        )}
 
-        ${reviewItem("Contact",request.contact)}
+        ${reviewItem(
+          "Contact",
+          request.contact
+        )}
 
-        ${reviewItem("Email",request.email || "None")}
+        ${reviewItem(
+          "Email",
+          request.email ||
+          "None"
+        )}
 
-        ${reviewItem("Copies",request.copies)}
+        ${reviewItem(
+          "Copies",
+          request.copies
+        )}
 
-        ${reviewItem("Fee",peso(request.totalFee))}
+        ${reviewItem(
+          "Fee",
+          peso(request.totalFee)
+        )}
 
-        ${reviewItem("Purpose",request.purpose)}
+        ${reviewItem(
+          "Purpose",
+          request.purpose
+        )}
+
 
         <div class="form-group full">
 
-          <label>Address</label>
+          <label>
+            Address
+          </label>
 
           <div class="url-box">
             ${esc(request.address)}
@@ -3780,10 +5668,15 @@ function openAdminRequest(id){
 
         <div class="form-group full">
 
-          <label>Resident Notes</label>
+          <label>
+            Resident Notes
+          </label>
 
           <div class="url-box">
-            ${esc(request.notes || "None")}
+            ${esc(
+              request.notes ||
+              "None"
+            )}
           </div>
 
         </div>
@@ -3791,7 +5684,9 @@ function openAdminRequest(id){
 
         <div class="form-group full">
 
-          <label>Admin Status</label>
+          <label>
+            Admin Status
+          </label>
 
           <select id="adminStatus">
             ${nextOptions}
@@ -3802,12 +5697,17 @@ function openAdminRequest(id){
 
         <div class="form-group full">
 
-          <label>Admin Notes</label>
+          <label>
+            Admin Notes
+          </label>
 
           <textarea
             id="adminNotes"
             placeholder="Add notes for this request..."
-          >${esc(request.adminNotes || "")}</textarea>
+          >${esc(
+            request.adminNotes ||
+            ""
+          )}</textarea>
 
         </div>
 
@@ -3830,12 +5730,14 @@ function openAdminRequest(id){
           Save Changes
         </button>
 
+
         <button
           class="btn btn-secondary"
           onclick="printRequest('${request.id}')"
         >
           Print
         </button>
+
 
         <button
           class="btn btn-danger"
@@ -3852,48 +5754,88 @@ function openAdminRequest(id){
 }
 
 
-function saveAdminChanges(id){
+/* =========================================================
+   SAVE ADMIN CHANGES
+   ========================================================= */
+
+async function saveAdminChanges(id){
 
   const status =
-    $("adminStatus").value;
+    $("adminStatus").value ||
+    "Pending";
+
 
   const notes =
     $("adminNotes").value.trim();
 
+
   const request =
     getRequest(id);
 
+
   if(!request){
+
     return;
-  }
-
-  if(status !== request.status){
-
-    updateStatus(
-      id,
-      status,
-      notes
-    );
-
-  }else{
-
-    updateRequest(
-      id,
-      {
-        adminNotes:notes
-      }
-    );
 
   }
 
-  closeModal();
 
-  toast(
-    "Request updated successfully.",
-    "success"
-  );
+  try{
 
-  renderAdminDashboard();
+    if(
+      status !==
+      (
+        request.status ||
+        "Pending"
+      )
+    ){
+
+      await updateStatus(
+        id,
+        status,
+        notes
+      );
+
+    }else{
+
+      await updateRequest(
+        id,
+        {
+          adminNotes:
+            notes,
+
+          status:
+            request.status ||
+            "Pending"
+        }
+      );
+
+    }
+
+
+    closeModal();
+
+
+    toast(
+      "Request updated successfully.",
+      "success"
+    );
+
+
+    renderAdminDashboard();
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }
 
 }
 
@@ -3902,34 +5844,62 @@ function saveAdminChanges(id){
    DELETE
    ========================================================= */
 
-function confirmDeleteRequest(id){
+async function confirmDeleteRequest(id){
 
   const request =
     getRequest(id);
 
+
   if(!request){
+
     return;
+
   }
+
 
   const confirmed =
     confirm(
       `Delete request ${request.id}?`
     );
 
+
   if(!confirmed){
+
     return;
+
   }
 
-  deleteRequest(id);
 
-  closeModal();
+  try{
 
-  toast(
-    "Request deleted.",
-    "success"
-  );
+    await deleteRequest(
+      id
+    );
 
-  renderAdminDashboard();
+
+    closeModal();
+
+
+    toast(
+      "Request deleted.",
+      "success"
+    );
+
+
+    renderAdminDashboard();
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }
 
 }
 
@@ -3938,14 +5908,21 @@ function confirmDeleteRequest(id){
    DEMO DATA
    ========================================================= */
 
-function seedDemoData(){
+async function seedDemoData(){
+
+  await waitForFirestoreData();
+
 
   const existing =
     loadRequests();
 
+
   if(existing.length){
+
     return false;
+
   }
+
 
   const samples = [
 
@@ -3962,9 +5939,9 @@ function seedDemoData(){
       purpose:"Employment",
       notes:"",
       urgent:false,
-      totalFee:50,
-      status:"Pending"
+      totalFee:50
     },
+
 
     {
       documentCode:"residency",
@@ -3979,9 +5956,9 @@ function seedDemoData(){
       purpose:"School Requirement",
       notes:"",
       urgent:false,
-      totalFee:30,
-      status:"Processing"
+      totalFee:30
     },
+
 
     {
       documentCode:"indigency",
@@ -3996,71 +5973,66 @@ function seedDemoData(){
       purpose:"Medical Assistance",
       notes:"",
       urgent:true,
-      totalFee:0,
-      status:"Ready"
+      totalFee:0
     }
 
   ];
 
 
-  const requests =
-    samples.map((data,index)=>{
+  for(
+    const [index,data]
+    of samples.entries()
+  ){
 
-      const created =
-        new Date(
-          Date.now() -
-          (index+1)*86400000
-        ).toISOString();
-
-      const request = {
-
-        id:`BRGY-2026-${100001+index}`,
-
-        ...data,
-
-        createdAt:created,
-
-        updatedAt:new Date().toISOString(),
-
-        adminNotes:
-          data.status === "Ready"
-            ? "Document is ready for release."
-            : "",
-
-        timeline:[
-          {
-            status:"Pending",
-            date:created,
-            note:"Request submitted successfully."
-          }
-        ]
-
-      };
+    const created =
+      new Date(
+        Date.now() -
+        (index+1) *
+        86400000
+      ).toISOString();
 
 
-      if(data.status !== "Pending"){
+    const request = {
 
-        request.timeline.push({
+      id:
+        `BRGY-2026-${100001+index}`,
 
-          status:data.status,
+      ...data,
 
-          date:new Date(
-            Date.now() -
-            index*3600000
-          ).toISOString(),
+      createdAt:
+        created,
 
-          note:`Request is currently ${data.status}.`
+      updatedAt:
+        new Date().toISOString(),
 
-        });
+      /*
+        New records created through
+        addRequest are guaranteed Pending.
+      */
 
-      }
+      status:
+        "Pending",
 
-      return request;
+      adminNotes:
+        "",
 
-    });
+      timeline:[
+        {
+          status:"Pending",
+          date:created,
+          note:"Request submitted successfully."
+        }
+      ]
+
+    };
 
 
-  saveRequests(requests);
+    await addRequest(
+      request
+    );
+
+  }
+
 
   return true;
 
@@ -4071,47 +6043,124 @@ function seedDemoData(){
    ADMIN DATA MANAGEMENT
    ========================================================= */
 
-function clearAllRequests(){
+async function clearAllRequests(){
 
   if(!isAdmin()){
+
     return;
+
   }
+
 
   const confirmed =
     confirm(
       "Delete ALL requests?"
     );
 
+
   if(!confirmed){
+
     return;
+
   }
 
-  localStorage.removeItem(DB_KEY);
 
-  toast(
-    "All requests cleared.",
-    "success"
-  );
+  try{
 
-  renderAdminDashboard();
+    await waitForFirestoreData();
+
+
+    const requests =
+      loadRequests();
+
+
+    for(
+      const request of requests
+    ){
+
+      if(
+        request.firestoreId
+      ){
+
+        await window.firebaseDeleteDoc(
+
+          window.firebaseDoc(
+            window.firebaseDB,
+            "requests",
+            request.firestoreId
+          )
+
+        );
+
+      }
+
+    }
+
+
+    firestoreRequests =
+      [];
+
+
+    toast(
+      "All requests cleared.",
+      "success"
+    );
+
+
+    renderAdminDashboard();
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    toast(
+      firebaseErrorMessage(error),
+      "error"
+    );
+
+  }
 
 }
 
 
-function backupJSON(){
+/* =========================================================
+   BACKUP JSON
+   ========================================================= */
+
+async function backupJSON(){
+
+  await waitForFirestoreData();
+
 
   const data =
     JSON.stringify(
-      loadRequests(),
+      loadRequests().map(
+        r=>{
+
+          const copy =
+            normalizeRequest({
+              ...r
+            });
+
+          delete copy.firestoreId;
+
+          return copy;
+
+        }
+      ),
       null,
       2
     );
+
 
   downloadFile(
     data,
     "barangay-requests-backup.json",
     "application/json"
   );
+
 
   toast(
     "Backup downloaded.",
@@ -4121,10 +6170,20 @@ function backupJSON(){
 }
 
 
-function exportCSV(){
+/* =========================================================
+   EXPORT CSV
+   ========================================================= */
+
+async function exportCSV(){
+
+  await waitForFirestoreData();
+
 
   const requests =
-    loadRequests();
+    loadRequests().map(
+      normalizeRequest
+    );
+
 
   if(!requests.length){
 
@@ -4134,7 +6193,9 @@ function exportCSV(){
     );
 
     return;
+
   }
+
 
   const headers = [
 
@@ -4155,22 +6216,36 @@ function exportCSV(){
 
 
   const rows =
-    requests.map(r=>[
+    requests.map(
+      r=>[
 
-      r.id,
-      r.fullName,
-      r.documentName,
-      r.contact,
-      r.email,
-      r.address,
-      r.purpose,
-      r.copies,
-      r.totalFee,
-      r.status,
-      r.createdAt,
-      r.updatedAt
+        r.id,
 
-    ]);
+        r.fullName,
+
+        r.documentName,
+
+        r.contact,
+
+        r.email,
+
+        r.address,
+
+        r.purpose,
+
+        r.copies,
+
+        r.totalFee,
+
+        r.status ||
+          "Pending",
+
+        r.createdAt,
+
+        r.updatedAt
+
+      ]
+    );
 
 
   const csv = [
@@ -4179,18 +6254,30 @@ function exportCSV(){
 
     ...rows
 
-  ].map(row=>
+  ]
+  .map(
+    row=>
 
-    row.map(value => {
+      row
+        .map(
+          value=>{
 
-      const text =
-        String(value ?? "");
+            const text =
+              String(
+                value ?? ""
+              );
 
-      return `"${text.replaceAll('"','""')}"`;
+            return `"${text.replaceAll(
+              '"',
+              '""'
+            )}"`;
 
-    }).join(",")
+          }
+        )
+        .join(",")
 
-  ).join("\n");
+  )
+  .join("\n");
 
 
   downloadFile(
@@ -4198,6 +6285,7 @@ function exportCSV(){
     "barangay-requests.csv",
     "text/csv"
   );
+
 
   toast(
     "CSV exported.",
@@ -4207,81 +6295,225 @@ function exportCSV(){
 }
 
 
-function importJSON(event){
+/* =========================================================
+   IMPORT JSON
+   ========================================================= */
+
+async function importJSON(event){
 
   const file =
     event.target.files?.[0];
 
+
   if(!file){
+
     return;
+
   }
+
 
   const reader =
     new FileReader();
 
-  reader.onload = function(){
 
-    try{
+  reader.onload =
+    async function(){
 
-      const data =
-        JSON.parse(reader.result);
+      try{
 
-      if(!Array.isArray(data)){
-        throw new Error("Invalid format");
+        const data =
+          JSON.parse(
+            reader.result
+          );
+
+
+        if(
+          !Array.isArray(data)
+        ){
+
+          throw new Error(
+            "Invalid format"
+          );
+
+        }
+
+
+        await waitForFirestoreData();
+
+
+        let imported =
+          0;
+
+
+        for(
+          const original
+          of data
+        ){
+
+          if(
+            !original ||
+            !original.id
+          ){
+
+            continue;
+
+          }
+
+
+          /*
+            Normalize imported data.
+            Missing status becomes Pending.
+          */
+
+          const normalized =
+            normalizeRequest(
+              original
+            );
+
+
+          const clean = {
+
+            ...normalized
+
+          };
+
+
+          delete clean.firestoreId;
+
+
+          /*
+            If an ID already exists,
+            update that request instead
+            of creating a duplicate.
+          */
+
+          const existing =
+            getRequest(
+              clean.id
+            );
+
+
+          if(
+            existing &&
+            existing.firestoreId
+          ){
+
+            await window.firebaseUpdateDoc(
+
+              window.firebaseDoc(
+                window.firebaseDB,
+                "requests",
+                existing.firestoreId
+              ),
+
+              clean
+
+            );
+
+          }else{
+
+            await window.firebaseAddDoc(
+
+              window.firebaseCollection(
+                window.firebaseDB,
+                "requests"
+              ),
+
+              clean
+
+            );
+
+          }
+
+
+          imported++;
+
+        }
+
+
+        toast(
+          `${imported} requests imported.`,
+          "success"
+        );
+
+
+        renderAdminDashboard();
+
+
+      }catch(error){
+
+        console.error(error);
+
+
+        toast(
+          "Invalid JSON backup file.",
+          "error"
+        );
+
+      }finally{
+
+        event.target.value =
+          "";
+
       }
 
-      saveRequests(data);
+    };
 
-      toast(
-        `${data.length} requests imported.`,
-        "success"
-      );
-
-      renderAdminDashboard();
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Invalid JSON backup file.",
-        "error"
-      );
-
-    }
-
-  };
 
   reader.readAsText(file);
 
 }
 
 
-function downloadFile(content,filename,type){
+function downloadFile(
+  content,
+  filename,
+  type
+){
 
   const blob =
     new Blob(
       [content],
-      {type:type}
+      {
+        type:type
+      }
     );
 
+
   const url =
-    URL.createObjectURL(blob);
+    URL.createObjectURL(
+      blob
+    );
+
 
   const a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
 
-  a.href = url;
 
-  a.download = filename;
+  a.href =
+    url;
 
-  document.body.appendChild(a);
+
+  a.download =
+    filename;
+
+
+  document.body.appendChild(
+    a
+  );
+
 
   a.click();
 
+
   a.remove();
 
-  URL.revokeObjectURL(url);
+
+  URL.revokeObjectURL(
+    url
+  );
 
 }
 
@@ -4293,15 +6525,29 @@ function downloadFile(content,filename,type){
 function printRequest(id){
 
   const request =
-    getRequest(id);
+    normalizeRequest(
+      getRequest(id)
+    );
+
 
   if(!request){
-    toast("Request not found.","error");
+
+    toast(
+      "Request not found.",
+      "error"
+    );
+
     return;
+
   }
 
+
   const win =
-    window.open("","_blank");
+    window.open(
+      "",
+      "_blank"
+    );
+
 
   win.document.write(`
 
@@ -4311,7 +6557,9 @@ function printRequest(id){
 
     <head>
 
-      <title>${esc(request.id)}</title>
+      <title>
+        ${esc(request.id)}
+      </title>
 
       <style>
 
@@ -4363,9 +6611,13 @@ function printRequest(id){
 
       <div class="header">
 
-        <h1>Barangay</h1>
+        <h1>
+          Barangay
+        </h1>
 
-        <h2>Document Request Slip</h2>
+        <h2>
+          Document Request Slip
+        </h2>
 
         <strong>
           ${esc(request.id)}
@@ -4375,53 +6627,107 @@ function printRequest(id){
 
 
       <div class="row">
-        <span class="label">Applicant</span>
-        <span>${esc(request.fullName)}</span>
+        <span class="label">
+          Applicant
+        </span>
+        <span>
+          ${esc(request.fullName)}
+        </span>
       </div>
 
-      <div class="row">
-        <span class="label">Document</span>
-        <span>${esc(request.documentName)}</span>
-      </div>
 
       <div class="row">
-        <span class="label">Birthdate</span>
-        <span>${esc(request.birthdate)}</span>
+        <span class="label">
+          Document
+        </span>
+        <span>
+          ${esc(request.documentName)}
+        </span>
       </div>
 
-      <div class="row">
-        <span class="label">Contact</span>
-        <span>${esc(request.contact)}</span>
-      </div>
 
       <div class="row">
-        <span class="label">Address</span>
-        <span>${esc(request.address)}</span>
+        <span class="label">
+          Birthdate
+        </span>
+        <span>
+          ${esc(request.birthdate)}
+        </span>
       </div>
 
-      <div class="row">
-        <span class="label">Purpose</span>
-        <span>${esc(request.purpose)}</span>
-      </div>
 
       <div class="row">
-        <span class="label">Copies</span>
-        <span>${esc(request.copies)}</span>
+        <span class="label">
+          Contact
+        </span>
+        <span>
+          ${esc(request.contact)}
+        </span>
       </div>
 
-      <div class="row">
-        <span class="label">Fee</span>
-        <span>${peso(request.totalFee)}</span>
-      </div>
 
       <div class="row">
-        <span class="label">Status</span>
-        <span class="status">${esc(request.status)}</span>
+        <span class="label">
+          Address
+        </span>
+        <span>
+          ${esc(request.address)}
+        </span>
       </div>
 
+
       <div class="row">
-        <span class="label">Submitted</span>
-        <span>${fmtDate(request.createdAt)}</span>
+        <span class="label">
+          Purpose
+        </span>
+        <span>
+          ${esc(request.purpose)}
+        </span>
+      </div>
+
+
+      <div class="row">
+        <span class="label">
+          Copies
+        </span>
+        <span>
+          ${esc(request.copies)}
+        </span>
+      </div>
+
+
+      <div class="row">
+        <span class="label">
+          Fee
+        </span>
+        <span>
+          ${peso(request.totalFee)}
+        </span>
+      </div>
+
+
+      <div class="row">
+        <span class="label">
+          Status
+        </span>
+        <span class="status">
+          ${esc(
+            request.status ||
+            "Pending"
+          )}
+        </span>
+      </div>
+
+
+      <div class="row">
+        <span class="label">
+          Submitted
+        </span>
+        <span>
+          ${fmtDate(
+            request.createdAt
+          )}
+        </span>
       </div>
 
 
@@ -4429,9 +6735,17 @@ function printRequest(id){
         request.adminNotes
           ? `
             <div class="note">
-              <strong>Admin Notes</strong>
+
+              <strong>
+                Admin Notes
+              </strong>
+
               <br><br>
-              ${esc(request.adminNotes)}
+
+              ${esc(
+                request.adminNotes
+              )}
+
             </div>
           `
           : ""
@@ -4450,7 +6764,9 @@ function printRequest(id){
           ${esc(
             buildAppUrl(
               "#/track?id="+
-              encodeURIComponent(request.id)
+              encodeURIComponent(
+                request.id
+              )
             )
           )}
         </small>
@@ -4460,26 +6776,46 @@ function printRequest(id){
 
       <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
 
+
       <script>
 
         new QRCode(
-          document.getElementById("qr"),
+
+          document.getElementById(
+            "qr"
+          ),
+
           {
+
             text:${JSON.stringify(
               buildAppUrl(
                 "#/track?id="+
-                encodeURIComponent(request.id)
+                encodeURIComponent(
+                  request.id
+                )
               )
             )},
+
             width:180,
+
             height:180
+
           }
+
         );
 
+
         window.onload=function(){
-          setTimeout(function(){
-            window.print();
-          },500);
+
+          setTimeout(
+            function(){
+
+              window.print();
+
+            },
+            500
+          );
+
         };
 
       <\/script>
@@ -4489,6 +6825,7 @@ function printRequest(id){
     </html>
 
   `);
+
 
   win.document.close();
 
@@ -4503,12 +6840,16 @@ async function copyText(text){
 
   try{
 
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(
+      text
+    );
+
 
     toast(
       "Copied to clipboard.",
       "success"
     );
+
 
   }catch{
 
@@ -4526,78 +6867,565 @@ async function copyText(text){
    ROUTER
    ========================================================= */
 
-function router(){
+async function router(){
 
   const hash =
-    location.hash || "#/home";
+    location.hash ||
+    "#/home";
 
-  if(hash === "#/home"){
+
+  if(
+    hash ===
+    "#/home"
+  ){
+
     renderHome();
+
     return;
+
   }
 
-  if(hash === "#/request"){
+
+  if(
+    hash ===
+    "#/request"
+  ){
+
     renderRequest();
+
     return;
+
   }
 
-  if(hash === "#/track"){
+
+  if(
+    hash ===
+    "#/track"
+  ){
 
     renderTrack();
 
     return;
+
   }
 
-  if(hash.startsWith("#/track?")){
+
+  if(
+    hash.startsWith(
+      "#/track?"
+    )
+  ){
 
     const params =
       new URLSearchParams(
         hash.split("?")[1]
       );
 
+
     renderTrack(
-      params.get("id") || ""
+      params.get("id") ||
+      ""
     );
 
+
     return;
+
   }
 
-  if(hash === "#/qr"){
+
+  if(
+    hash ===
+    "#/qr"
+  ){
 
     renderQR();
 
     return;
+
   }
 
-  if(hash === "#/admin"){
+
+  if(
+    hash ===
+    "#/admin"
+  ){
 
     renderAdminLogin();
 
     return;
+
   }
 
-  if(hash === "#/admin/dashboard"){
 
-    renderAdminDashboard();
+  if(
+    hash ===
+    "#/admin/dashboard"
+  ){
+
+    await renderAdminDashboard();
 
     return;
+
   }
 
-  if(hash.startsWith("#/success?")){
+
+  if(
+    hash.startsWith(
+      "#/success?"
+    )
+  ){
 
     const params =
       new URLSearchParams(
         hash.split("?")[1]
       );
+
 
     renderSuccess(
       params.get("id")
     );
 
+
     return;
+
   }
 
+
   go("#/home");
+
+}
+
+
+/* =========================================================
+   APPLICATION STATE
+   ========================================================= */
+
+let formState = {
+
+  step:1,
+
+  docCode:"",
+
+  fullName:"",
+
+  birthdate:"",
+
+  address:"",
+
+  contact:"",
+
+  email:"",
+
+  copies:1,
+
+  purpose:"",
+
+  notes:"",
+
+  urgent:false
+
+};
+
+
+let adminFilter = {
+
+  search:"",
+
+  status:"All",
+
+  sort:"newest"
+
+};
+
+
+/* =========================================================
+   DOCUMENT TYPES
+   ========================================================= */
+
+const DOCUMENTS = [
+
+  {
+    code:"clearance",
+    name:"Barangay Clearance",
+    price:50,
+    processing:"1–2 working days",
+    icon:"📄",
+    description:"Certificate commonly required for employment and other transactions."
+  },
+
+  {
+    code:"residency",
+    name:"Certificate of Residency",
+    price:30,
+    processing:"Same day",
+    icon:"🏠",
+    description:"Proof that the resident is currently residing in the barangay."
+  },
+
+  {
+    code:"indigency",
+    name:"Certificate of Indigency",
+    price:0,
+    processing:"Same day",
+    icon:"📜",
+    description:"Certificate for qualified residents who need proof of indigency."
+  },
+
+  {
+    code:"business",
+    name:"Business Clearance",
+    price:150,
+    processing:"2–3 working days",
+    icon:"🏪",
+    description:"Document for businesses operating within the barangay."
+  },
+
+  {
+    code:"cedula",
+    name:"Community Tax Certificate",
+    price:25,
+    processing:"Same day",
+    icon:"🧾",
+    description:"Request assistance for Community Tax Certificate processing."
+  },
+
+  {
+    code:"barangay-id",
+    name:"Barangay ID",
+    price:75,
+    processing:"3–5 working days",
+    icon:"🪪",
+    description:"Identification document issued for qualified residents."
+  }
+
+];
+
+
+const STATUS_FLOW = [
+
+  "Pending",
+
+  "Processing",
+
+  "Ready",
+
+  "Completed"
+
+];
+
+
+const ALL_STATUSES = [
+
+  "Pending",
+
+  "Processing",
+
+  "Ready",
+
+  "Completed",
+
+  "Rejected"
+
+];
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function $(id){
+
+  return document.getElementById(
+    id
+  );
+
+}
+
+
+function go(hash){
+
+  location.hash =
+    hash;
+
+  closeMenu();
+
+}
+
+
+function toggleMenu(){
+
+  $("navLinks")
+    .classList
+    .toggle("show");
+
+}
+
+
+function closeMenu(){
+
+  $("navLinks")
+    ?.classList
+    .remove("show");
+
+}
+
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  )
+
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
+
+function peso(value){
+
+  const amount =
+    Number(
+      value || 0
+    );
+
+
+  if(
+    amount === 0
+  ){
+
+    return "FREE";
+
+  }
+
+
+  return "₱" +
+    amount.toLocaleString(
+      "en-PH",
+      {
+
+        minimumFractionDigits:
+          2,
+
+        maximumFractionDigits:
+          2
+
+      }
+    );
+
+}
+
+
+function fmtDate(date){
+
+  if(!date){
+
+    return "—";
+
+  }
+
+
+  return new Date(
+    date
+  ).toLocaleString(
+    "en-PH",
+    {
+
+      dateStyle:
+        "medium",
+
+      timeStyle:
+        "short"
+
+    }
+  );
+
+}
+
+
+function fmtDateOnly(date){
+
+  if(!date){
+
+    return "—";
+
+  }
+
+
+  return new Date(
+    date
+  ).toLocaleDateString(
+    "en-PH",
+    {
+
+      year:
+        "numeric",
+
+      month:
+        "long",
+
+      day:
+        "numeric"
+
+    }
+  );
+
+}
+
+
+function docByCode(code){
+
+  return DOCUMENTS.find(
+    d =>
+      d.code === code
+  );
+
+}
+
+
+function toast(
+  message,
+  type="info"
+){
+
+  const box =
+    $("toastBox");
+
+
+  const el =
+    document.createElement(
+      "div"
+    );
+
+
+  el.className =
+    "toast " +
+    type;
+
+
+  el.textContent =
+    message;
+
+
+  box.appendChild(
+    el
+  );
+
+
+  setTimeout(()=>{
+
+    el.remove();
+
+  },3500);
+
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+function openModal(
+  title,
+  html
+){
+
+  $("modalTitle")
+    .textContent =
+    title;
+
+
+  $("modalBody")
+    .innerHTML =
+    html;
+
+
+  $("modal")
+    .classList
+    .add("show");
+
+}
+
+
+function closeModal(){
+
+  $("modal")
+    .classList
+    .remove("show");
+
+}
+
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+function applyTheme(){
+
+  const theme =
+    localStorage.getItem(
+      THEME_KEY
+    ) ||
+    "light";
+
+
+  document.documentElement
+    .setAttribute(
+      "data-theme",
+      theme
+    );
+
+}
+
+
+function toggleTheme(){
+
+  const current =
+    document.documentElement
+      .getAttribute(
+        "data-theme"
+      );
+
+
+  const next =
+    current === "dark"
+      ? "light"
+      : "dark";
+
+
+  document.documentElement
+    .setAttribute(
+      "data-theme",
+      next
+    );
+
+
+  localStorage.setItem(
+    THEME_KEY,
+    next
+  );
 
 }
 
@@ -4608,15 +7436,53 @@ function router(){
 
 applyTheme();
 
+
 window.addEventListener(
   "hashchange",
   router
 );
 
+
+/*
+  Start Firebase realtime listener.
+*/
+
+window.addEventListener(
+  "firebase-ready",
+  ()=>{
+
+    initializeFirestore();
+
+  }
+);
+
+
+/*
+  The Firebase module normally
+  finishes before this event is
+  needed, but this also protects
+  against loading timing issues.
+*/
+
 window.addEventListener(
   "load",
-  ()=>{
+  async ()=>{
+
+    try{
+
+      await initializeFirestore();
+
+    }catch(error){
+
+      console.error(
+        error
+      );
+
+    }
+
+
     router();
+
   }
 );
 
@@ -4632,7 +7498,9 @@ window.addEventListener(
    Para magkaroon ng sample data:
    Open Admin Portal > Login
    then sa browser console:
+
    seedDemoData();
+
 */
 
 </script>
