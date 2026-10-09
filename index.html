@@ -18,11 +18,11 @@
    ========================================================= */
 
 :root{
-  --primary:#123b82;
-  --primary2:#1769d1;
-  --primary3:#0b2b61;
-  --gold:#f5b301;
-  --gold2:#d99b00;
+  --primary:#b91c1c;
+  --primary2:#ef4444;
+  --primary3:#7f1d1d;
+  --gold:#dc2626;
+  --gold2:#b91c1c;
 
   --bg:#f4f7fb;
   --card:#ffffff;
@@ -30,17 +30,17 @@
   --muted:#667085;
   --border:#dfe5ee;
 
-  --success:#16803c;
-  --success-bg:#e8f7ee;
+  --success:#dc2626;
+  --success-bg:#fee2e2;
 
-  --warning:#a86500;
-  --warning-bg:#fff4dc;
+  --warning:#b91c1c;
+  --warning-bg:#fee2e2;
 
-  --danger:#b42318;
-  --danger-bg:#fdecec;
+  --danger:#b91c1c;
+  --danger-bg:#fee2e2;
 
-  --info:#175cd3;
-  --info-bg:#eaf2ff;
+  --info:#dc2626;
+  --info-bg:#fee2e2;
 
   --shadow:0 12px 35px rgba(15,35,75,.10);
   --radius:18px;
@@ -53,10 +53,10 @@ html[data-theme="dark"]{
   --muted:#aab5c7;
   --border:#273550;
 
-  --success-bg:#123322;
-  --warning-bg:#3b2d0d;
-  --danger-bg:#401d1b;
-  --info-bg:#102b54;
+  --success-bg:#401d1d;
+  --warning-bg:#401d1d;
+  --danger-bg:#401d1d;
+  --info-bg:#401d1d;
 
   --shadow:0 12px 35px rgba(0,0,0,.35);
 }
@@ -131,7 +131,7 @@ header{
   font-size:23px;
   font-weight:900;
   background:linear-gradient(135deg,var(--primary),var(--primary2));
-  box-shadow:0 8px 20px rgba(18,59,130,.25);
+  box-shadow:0 8px 20px rgba(185,28,28,.25);
 }
 
 .brand-title{
@@ -251,8 +251,8 @@ main{
   overflow:hidden;
   position:relative;
   background:
-    radial-gradient(circle at 85% 15%,rgba(245,179,1,.30),transparent 25%),
-    linear-gradient(135deg,#0b2b61,#1769d1);
+    radial-gradient(circle at 85% 15%,rgba(239,68,68,.25),transparent 25%),
+    linear-gradient(135deg,#7f1d1d,#ef4444);
   box-shadow:var(--shadow);
 }
 
@@ -291,7 +291,7 @@ main{
 
 .hero p{
   max-width:680px;
-  color:#dce9ff;
+  color:#fee2e2;
   font-size:16px;
   margin-bottom:25px;
 }
@@ -462,7 +462,7 @@ input:focus,
 select:focus,
 textarea:focus{
   border-color:var(--primary2);
-  box-shadow:0 0 0 3px rgba(23,105,209,.10);
+  box-shadow:0 0 0 3px rgba(220,38,38,.12);
 }
 
 textarea{
@@ -696,7 +696,7 @@ th{
 }
 
 tr:hover td{
-  background:rgba(23,105,209,.03);
+  background:rgba(220,38,38,.04);
 }
 
 /* =========================================================
@@ -958,7 +958,7 @@ tr:hover td{
 
 footer{
   background:var(--primary3);
-  color:#d9e5fa;
+  color:#fee2e2;
   padding:28px 20px;
 }
 
@@ -972,7 +972,7 @@ footer{
 }
 
 .footer-inner small{
-  color:#9fb2d3;
+  color:#fca5a5;
 }
 
 /* =========================================================
@@ -4342,67 +4342,40 @@ function generateQR(
   text,
   size=250
 ){
+  const container = $(elementId);
+  if(!container || !text) return false;
 
-  const container =
-    $(elementId);
+  container.innerHTML = "";
 
-
-  if(!container){
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    "";
-
-
-  if(!text){
-
-    return;
-
-  }
-
-
-  if(
-    typeof QRCode ===
-    "undefined"
-  ){
-
-    container.innerHTML = `
-
-      <p style="color:var(--danger)">
-        QR library failed to load.
-      </p>
-
-    `;
-
-    return;
-
-  }
-
-
-  new QRCode(
-    container,
-    {
-
-      text:text,
-
-      width:size,
-
-      height:size,
-
-      colorDark:"#111111",
-
-      colorLight:"#ffffff",
-
-      correctLevel:
-        QRCode.CorrectLevel.H
-
+  // Main method: use the locally included QRCodeJS library.
+  if(typeof QRCode !== "undefined"){
+    try {
+      new QRCode(container, {
+        text: text,
+        width: size,
+        height: size,
+        colorDark: "#111111",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      return true;
+    } catch(error) {
+      console.warn("QRCodeJS failed; using fallback image.", error);
     }
-  );
+  }
 
+  // Fallback: still display a scannable QR if the JavaScript CDN is blocked.
+  const img = document.createElement("img");
+  img.alt = "Resident request QR code";
+  img.width = size;
+  img.height = size;
+  img.style.cssText = "display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;padding:8px;";
+  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=" + size + "x" + size + "&format=png&data=" + encodeURIComponent(text);
+  img.onerror = function(){
+    container.innerHTML = '<p style="color:var(--danger)">Hindi ma-load ang QR code. Siguraduhing may internet connection at subukan ulit.</p>';
+  };
+  container.appendChild(img);
+  return true;
 }
 
 
@@ -4442,17 +4415,23 @@ function generateResidentQR(){
     finalUrl;
 
 
-  generateQR(
+  const generated = generateQR(
     "residentQR",
     finalUrl,
     250
   );
 
-
-  toast(
-    "QR Code generated successfully.",
-    "success"
-  );
+  if(generated){
+    toast(
+      "QR Code generated. I-scan para i-test ang destination.",
+      "success"
+    );
+  } else {
+    toast(
+      "Hindi nagawa ang QR code. I-check ang URL at subukan ulit.",
+      "error"
+    );
+  }
 
 }
 
